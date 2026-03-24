@@ -13,6 +13,11 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        "mono-jb": ["JetBrains Mono", "monospace"],
+        "display": ["Playfair Display", "Georgia", "serif"],
+        "body": ["DM Sans", "sans-serif"],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

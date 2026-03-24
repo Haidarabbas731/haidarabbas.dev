@@ -30,13 +30,13 @@ const Contact = () => {
         </div>
 
         <form className="space-y-4" onSubmit={e => e.preventDefault()}>
-          <input type="text" placeholder="Name"
+          <input type="text" placeholder="Name" aria-label="Name"
             className="w-full px-4 py-3 text-sm rounded-md border bg-transparent outline-none focus:border-primary/50 transition-colors"
             style={{ borderColor: "hsl(var(--border))", fontFamily: "var(--font-mono)" }} />
-          <input type="email" placeholder="Email"
+          <input type="email" placeholder="Email" aria-label="Email"
             className="w-full px-4 py-3 text-sm rounded-md border bg-transparent outline-none focus:border-primary/50 transition-colors"
             style={{ borderColor: "hsl(var(--border))", fontFamily: "var(--font-mono)" }} />
-          <textarea placeholder="Message" rows={4}
+          <textarea placeholder="Message" rows={4} aria-label="Message"
             className="w-full px-4 py-3 text-sm rounded-md border bg-transparent outline-none focus:border-primary/50 transition-colors resize-none"
             style={{ borderColor: "hsl(var(--border))" }} />
           <button type="submit" className="px-6 py-3 text-sm font-medium rounded-md transition-all"

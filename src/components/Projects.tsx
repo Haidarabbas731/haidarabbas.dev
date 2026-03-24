@@ -11,8 +11,9 @@ const Projects = () => (
           className={`group relative rounded-lg border overflow-hidden transition-all hover:border-primary/40 ${i === 0 ? "md:col-span-2" : ""}`}
           style={{ borderColor: "hsl(var(--border))", background: "hsl(var(--card))" }}>
           
-          <div className="relative h-48 md:h-56 flex items-center justify-center" style={{ background: "hsl(var(--muted))" }}>
-            <span className="text-sm" style={{ color: "hsl(var(--muted-foreground))", fontFamily: "var(--font-mono)" }}>
+          <div className="relative h-48 md:h-56 flex items-center justify-center overflow-hidden" style={{ background: "hsl(var(--muted))" }}>
+            <div className="absolute inset-0 animate-shimmer" style={{ background: "linear-gradient(90deg, transparent 0%, hsl(var(--foreground) / 0.03) 50%, transparent 100%)", backgroundSize: "200% 100%" }} />
+            <span className="text-sm relative z-10" style={{ color: "hsl(var(--foreground) / 0.4)", fontFamily: "var(--font-mono)" }}>
               [PROJECT_IMAGE]
             </span>
 
@@ -38,11 +39,11 @@ const Projects = () => (
 
           <div className="p-6">
             <h3 className="text-xl font-bold mb-2" style={{ fontFamily: "var(--font-display)" }}>{project.title}</h3>
-            <p className="text-sm mb-4" style={{ color: "hsl(var(--muted-foreground))" }}>{project.description}</p>
+            <p className="text-sm mb-4" style={{ color: "hsl(var(--foreground) / 0.7)" }}>{project.description}</p>
             <div className="flex flex-wrap gap-2">
               {project.techStack.map(t => (
                 <span key={t} className="px-2 py-0.5 text-xs rounded-full border"
-                  style={{ borderColor: "hsl(var(--border))", color: "hsl(var(--muted-foreground))", fontFamily: "var(--font-mono)" }}>
+                  style={{ borderColor: "hsl(var(--border))", color: "hsl(var(--foreground) / 0.6)", fontFamily: "var(--font-mono)" }}>
                   {t}
                 </span>
               ))}

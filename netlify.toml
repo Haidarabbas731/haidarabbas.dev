@@ -2,6 +2,15 @@
   command = "npm run build"
   publish = "dist"
 
+[functions]
+  directory = "netlify/functions"
+
+[dev]
+  command = "bunx vite --port 3000"
+  targetPort = 3000
+  port = 8888
+  autoLaunch = false
+
 [[redirects]]
   from = "/*"
   to = "/index.html"

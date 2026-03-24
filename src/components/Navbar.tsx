@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const navLinks = [
   { label: "About", href: "#about" },
@@ -27,6 +28,18 @@ const Navbar = () => {
               {l.label}
             </a>
           ))}
+          <Link
+            to="/resume"
+            className="text-xs px-3 py-1.5 rounded-full border transition-all hover:shadow-[0_0_12px_hsl(var(--primary)/0.4)]"
+            style={{
+              fontFamily: "var(--font-mono)",
+              color: "hsl(var(--primary))",
+              borderColor: "hsl(var(--primary) / 0.35)",
+              background: "hsl(var(--primary) / 0.06)",
+            }}
+          >
+            Resume AI ✦
+          </Link>
         </div>
 
         {/* Mobile toggle */}
@@ -46,6 +59,19 @@ const Navbar = () => {
               {l.label}
             </a>
           ))}
+          <Link
+            to="/resume"
+            onClick={() => setOpen(false)}
+            className="text-xs px-3 py-1.5 rounded-full border w-fit transition-all"
+            style={{
+              fontFamily: "var(--font-mono)",
+              color: "hsl(var(--primary))",
+              borderColor: "hsl(var(--primary) / 0.35)",
+              background: "hsl(var(--primary) / 0.06)",
+            }}
+          >
+            Resume AI ✦
+          </Link>
         </div>
       )}
     </nav>

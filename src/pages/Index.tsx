@@ -13,7 +13,7 @@ import CustomCursor from "@/components/CustomCursor";
 import GrainOverlay from "@/components/GrainOverlay";
 
 const Index = () => (
-  <div className="relative min-h-screen">
+  <main className="relative min-h-screen">
     <CustomCursor />
     <GrainOverlay />
     <Navbar />
@@ -27,7 +27,7 @@ const Index = () => (
     {/* <Blog /> */}
     <Contact />
     <Footer />
-  </div>
+  </main>
 );
 
 export default Index;
