@@ -139,4 +139,4 @@ AI/ML Engineer with expertise in fine-tuning Large Language Models, building mul
   {Himmatnagar, Gujarat}
   {Jun 2023 -- Apr 2026}
 
-\\end{document}`;
+\\end{document}`

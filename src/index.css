@@ -46,9 +46,9 @@
 }
 
 :root {
-  --font-display: 'Playfair Display', Georgia, serif;
-  --font-mono: 'JetBrains Mono', monospace;
-  --font-body: 'DM Sans', sans-serif;
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-mono: "JetBrains Mono", monospace;
+  --font-body: "DM Sans", sans-serif;
 }
 
 @layer base {
@@ -63,7 +63,9 @@
   html {
     scroll-behavior: smooth;
   }
-  h1, h2, h3 {
+  h1,
+  h2,
+  h3 {
     font-family: var(--font-display);
   }
   ::selection {
@@ -73,8 +75,12 @@
 
 /* Marquee animation */
 @keyframes marquee {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
 }
 
 .animate-marquee {
@@ -83,8 +89,12 @@
 
 /* Slow spin for photo ring */
 @keyframes spin-slow {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .animate-spin-slow {
@@ -92,8 +102,13 @@
 }
 
 @keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
 }
 
 .animate-blink {
@@ -102,8 +117,13 @@
 
 /* Float animation for empty state icons */
 @keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-8px); }
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
 }
 
 .animate-float {
@@ -112,8 +132,12 @@
 
 /* Shimmer animation for loading/badge effects */
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 .animate-shimmer {
@@ -122,11 +146,22 @@
 
 /* Shake animation for error states */
 @keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  20% { transform: translateX(-6px); }
-  40% { transform: translateX(6px); }
-  60% { transform: translateX(-4px); }
-  80% { transform: translateX(4px); }
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-6px);
+  }
+  40% {
+    transform: translateX(6px);
+  }
+  60% {
+    transform: translateX(-4px);
+  }
+  80% {
+    transform: translateX(4px);
+  }
 }
 
 .animate-shake {

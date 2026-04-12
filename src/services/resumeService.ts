@@ -1,12 +1,8 @@
-import type { Provider } from "@/types/resume";
+import type { Provider } from '@/types/resume'
 
 // ── Prompt builder ─────────────────────────────────────────────────────────
 
-function buildPrompt(
-  baseLatex: string,
-  jobDescription: string,
-  additionalNotes: string
-): string {
+function buildPrompt(baseLatex: string, jobDescription: string, additionalNotes: string): string {
   return `You are a senior technical recruiter and ATS optimization expert with 15+ years tailoring resumes for top tech companies. Your task is to rewrite the provided LaTeX resume so it passes ATS screening and strongly resonates with the human reviewer — all without inventing anything.
 
 ════════════════════════════════════════
@@ -51,100 +47,96 @@ JOB DESCRIPTION
 ════════════════════════════════════════
 ${jobDescription}
 
-${additionalNotes ? `════════════════════════════════════════\nADDITIONAL NOTES FROM CANDIDATE\n════════════════════════════════════════\n${additionalNotes}\n` : ""}
-Now output the complete tailored LaTeX document:`;
+${additionalNotes ? `════════════════════════════════════════\nADDITIONAL NOTES FROM CANDIDATE\n════════════════════════════════════════\n${additionalNotes}\n` : ''}
+Now output the complete tailored LaTeX document:`
 }
 
 // ── Clean AI output ────────────────────────────────────────────────────────
 
 function cleanLatex(raw: string): string {
   return raw
-    .replace(/^```(?:latex|tex)?\n?/i, "")
-    .replace(/\n?```$/i, "")
-    .trim();
+    .replace(/^```(?:latex|tex)?\n?/i, '')
+    .replace(/\n?```$/i, '')
+    .trim()
 }
 
 // ── Gemini ─────────────────────────────────────────────────────────────────
 
-async function callGemini(
-  apiKey: string,
-  model: string,
-  prompt: string
-): Promise<string> {
+async function callGemini(apiKey: string, model: string, prompt: string): Promise<string> {
   const response = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
     {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        contents: [{ role: "user", parts: [{ text: prompt }] }],
+        contents: [{ role: 'user', parts: [{ text: prompt }] }],
         generationConfig: { temperature: 0.3, maxOutputTokens: 8192 },
       }),
       signal: AbortSignal.timeout(60_000),
     }
-  );
+  )
 
   if (!response.ok) {
-    const err = await response.json().catch(() => ({}));
+    const err = await response.json().catch(() => ({}))
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const msg = (err as any)?.error?.message as string | undefined;
-    if (response.status === 429) throw new Error("Rate limited by Gemini. Please wait a moment and try again.");
-    if (response.status === 401 || response.status === 403) throw new Error("Invalid Gemini API key.");
-    throw new Error(`Gemini API error: ${msg ?? "Unknown error"}`);
+    const msg = (err as any)?.error?.message as string | undefined
+    if (response.status === 429)
+      throw new Error('Rate limited by Gemini. Please wait a moment and try again.')
+    if (response.status === 401 || response.status === 403)
+      throw new Error('Invalid Gemini API key.')
+    throw new Error(`Gemini API error: ${msg ?? 'Unknown error'}`)
   }
 
-  const data = await response.json();
-  const candidates = data.candidates;
+  const data = await response.json()
+  const candidates = data.candidates
   if (!candidates || candidates.length === 0) {
-    throw new Error("Gemini returned no candidates. Please retry.");
+    throw new Error('Gemini returned no candidates. Please retry.')
   }
-  if (candidates[0].finishReason === "SAFETY") {
-    throw new Error("Content was filtered by safety settings. Try rephrasing the job description.");
+  if (candidates[0].finishReason === 'SAFETY') {
+    throw new Error('Content was filtered by safety settings. Try rephrasing the job description.')
   }
 
-  return cleanLatex(candidates[0].content.parts[0].text as string);
+  return cleanLatex(candidates[0].content.parts[0].text as string)
 }
 
 // ── OpenRouter ─────────────────────────────────────────────────────────────
 
-async function callOpenRouter(
-  apiKey: string,
-  model: string,
-  prompt: string
-): Promise<string> {
-  const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-    method: "POST",
+async function callOpenRouter(apiKey: string, model: string, prompt: string): Promise<string> {
+  const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       Authorization: `Bearer ${apiKey}`,
-      "HTTP-Referer": window.location.origin,
-      "X-Title": "Resume Tailor",
+      'HTTP-Referer': window.location.origin,
+      'X-Title': 'Resume Tailor',
     },
     body: JSON.stringify({
       model,
-      messages: [{ role: "user", content: prompt }],
+      messages: [{ role: 'user', content: prompt }],
       temperature: 0.3,
       max_tokens: 8192,
     }),
     signal: AbortSignal.timeout(60_000),
-  });
+  })
 
   if (!response.ok) {
-    const err = await response.json().catch(() => ({}));
+    const err = await response.json().catch(() => ({}))
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const msg = (err as any)?.error?.message as string | undefined;
-    if (response.status === 429) throw new Error("Rate limited by OpenRouter. Please wait a moment and try again.");
-    if (response.status === 401 || response.status === 403) throw new Error("Invalid OpenRouter API key.");
-    throw new Error(`OpenRouter API error: ${msg ?? "Unknown error"}`);
+    const msg = (err as any)?.error?.message as string | undefined
+    if (response.status === 429)
+      throw new Error('Rate limited by OpenRouter. Please wait a moment and try again.')
+    if (response.status === 401 || response.status === 403)
+      throw new Error('Invalid OpenRouter API key.')
+    throw new Error(`OpenRouter API error: ${msg ?? 'Unknown error'}`)
   }
 
-  const data = await response.json();
-  const choices = data.choices;
+  const data = await response.json()
+  const choices = data.choices
   if (!choices || choices.length === 0) {
-    throw new Error("OpenRouter returned no choices. Please retry.");
+    throw new Error('OpenRouter returned no choices. Please retry.')
   }
 
-  return cleanLatex(choices[0].message.content as string);
+  return cleanLatex(choices[0].message.content as string)
 }
 
 // ── Public API ─────────────────────────────────────────────────────────────
@@ -159,13 +151,13 @@ export async function tailorResume(
   model: string,
   baseLatex: string,
   jobDescription: string,
-  additionalNotes = ""
+  additionalNotes = ''
 ): Promise<string> {
-  const prompt = buildPrompt(baseLatex, jobDescription, additionalNotes);
-  if (provider === "gemini") {
-    return callGemini(apiKey, model, prompt);
+  const prompt = buildPrompt(baseLatex, jobDescription, additionalNotes)
+  if (provider === 'gemini') {
+    return callGemini(apiKey, model, prompt)
   }
-  return callOpenRouter(apiKey, model, prompt);
+  return callOpenRouter(apiKey, model, prompt)
 }
 
 /**
@@ -173,26 +165,28 @@ export async function tailorResume(
  * Returns a blob URL for the resulting PDF.
  */
 export async function compileLaTeX(latexContent: string): Promise<string> {
-  const response = await fetch("https://latex.ytotech.com/builds/sync", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+  const response = await fetch('https://latex.ytotech.com/builds/sync', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      compiler: "pdflatex",
+      compiler: 'pdflatex',
       resources: [{ main: true, content: latexContent }],
     }),
     signal: AbortSignal.timeout(60_000),
-  });
+  })
 
   if (!response.ok) {
-    let errorMsg = "LaTeX compilation failed. The LaTeX code may have errors.";
+    let errorMsg = 'LaTeX compilation failed. The LaTeX code may have errors.'
     try {
-      const errData = await response.json();
+      const errData = await response.json()
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      errorMsg = (errData as any).logs ?? (errData as any).error ?? errorMsg;
-    } catch { /* ignore parse errors */ }
-    throw new Error(errorMsg);
+      errorMsg = (errData as any).logs ?? (errData as any).error ?? errorMsg
+    } catch {
+      /* ignore parse errors */
+    }
+    throw new Error(errorMsg)
   }
 
-  const pdfBlob = await response.blob();
-  return URL.createObjectURL(pdfBlob);
+  const pdfBlob = await response.blob()
+  return URL.createObjectURL(pdfBlob)
 }

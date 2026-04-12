@@ -8,7 +8,10 @@
     "dev:netlify": "netlify dev",
     "build": "vite build",
     "build:dev": "vite build --mode development",
-    "lint": "eslint .",
+    "lint": "biome lint .",
+    "format": "biome format --write .",
+    "check": "biome check --write .",
+    "ci:check": "biome ci .",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest"
@@ -65,7 +68,7 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
-    "@eslint/js": "^9.32.0",
+    "@biomejs/biome": "^2.4.11",
     "@netlify/functions": "^5.1.5",
     "@tailwindcss/typography": "^0.5.16",
     "@testing-library/jest-dom": "^6.6.0",
@@ -75,16 +78,11 @@
     "@types/react-dom": "^18.3.7",
     "@vitejs/plugin-react-swc": "^3.11.0",
     "autoprefixer": "^10.4.21",
-    "eslint": "^9.32.0",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-react-refresh": "^0.4.20",
-    "globals": "^15.15.0",
     "jsdom": "^20.0.3",
     "netlify-cli": "^24.4.1",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.17",
-    "typescript": "^5.8.3",
-    "typescript-eslint": "^8.38.0",
+    "typescript": "^6.0.2",
     "vite": "^5.4.19",
     "vitest": "^3.2.4"
   }
