@@ -7,6 +7,7 @@ import { AccessModeSelector } from '@/components/resume/AccessModeSelector'
 import { JobDescriptionInput } from '@/components/resume/JobDescriptionInput'
 import { PdfPreview } from '@/components/resume/PdfPreview'
 import { ResumeActions } from '@/components/resume/ResumeActions'
+import { ResumeWarnings } from '@/components/resume/ResumeWarnings'
 import { useResumeTailor } from '@/hooks/useResumeTailor'
 import type { Provider, ResumeConfig, ResumeSource } from '@/types/resume'
 
@@ -32,6 +33,8 @@ export default function ResumePage() {
     error,
     canTailor,
     canDownload,
+    showing,
+    warnings,
     tailor,
     reset,
     download,
@@ -193,6 +196,7 @@ export default function ResumePage() {
                     onReset={reset}
                     onDownload={download}
                   />
+                  <ResumeWarnings warnings={warnings} />
                 </div>
               </div>
 
@@ -207,7 +211,12 @@ export default function ResumePage() {
                     boxShadow: 'var(--shadow-card)',
                   }}
                 >
-                  <PdfPreview pdfUrl={pdfUrl} status={status} hasSource={!!config.source} />
+                  <PdfPreview
+                    pdfUrl={pdfUrl}
+                    status={status}
+                    hasSource={!!config.source}
+                    showing={showing}
+                  />
                 </div>
               </div>
             </div>

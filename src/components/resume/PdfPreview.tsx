@@ -5,6 +5,8 @@ interface PdfPreviewProps {
   pdfUrl: string | null
   status: TailorStatus
   hasSource: boolean
+  /** Which version the preview is showing, so it is never mistaken for the other. */
+  showing?: 'original' | 'tailored' | null
 }
 
 const steps = [
@@ -25,12 +27,35 @@ function getLoadingPhaseLabel(status: TailorStatus) {
   return 'Processing...'
 }
 
-export function PdfPreview({ pdfUrl, status, hasSource }: PdfPreviewProps) {
+export function PdfPreview({ pdfUrl, status, hasSource, showing }: PdfPreviewProps) {
   const isLoading = status === 'compiling' || status === 'tailoring'
   const activeStep = getActiveStep(hasSource, pdfUrl, status)
 
   return (
     <div className="flex flex-col h-full gap-3">
+      {pdfUrl && showing && (
+        <div className="flex items-center">
+          <span
+            className="px-2 py-0.5 rounded-full text-xs font-mono-jb border"
+            style={
+              showing === 'tailored'
+                ? {
+                    color: 'hsl(var(--primary))',
+                    borderColor: 'hsl(var(--primary) / 0.35)',
+                    background: 'hsl(var(--primary) / 0.08)',
+                  }
+                : {
+                    color: 'hsl(var(--muted-foreground))',
+                    borderColor: 'hsl(var(--border))',
+                    background: 'hsl(var(--card) / 0.5)',
+                  }
+            }
+          >
+            {showing === 'tailored' ? 'Tailored resume' : 'Original resume'}
+          </span>
+        </div>
+      )}
+
       {/* Preview area */}
       <div
         className="relative flex-1 rounded-lg overflow-hidden border transition duration-500"

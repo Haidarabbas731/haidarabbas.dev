@@ -48,6 +48,7 @@
 
     /* Status */
     --success: 175 85% 26%;
+    --warning: 32 92% 34%;
 
     /* Window chrome (identical in both themes) */
     --dot-red: 3 100% 67%;
@@ -124,6 +125,7 @@
     --sidebar-ring: 175 80% 50%;
 
     --success: 175 80% 50%;
+    --warning: 40 92% 58%;
 
     --terminal-border: 240 10% 14%;
 

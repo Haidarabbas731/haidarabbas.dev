@@ -57,6 +57,7 @@ export default {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
+        warning: 'hsl(var(--warning))',
         overlay: 'hsl(var(--overlay) / var(--overlay-alpha))',
         sidebar: {
           DEFAULT: 'hsl(var(--sidebar-background))',
