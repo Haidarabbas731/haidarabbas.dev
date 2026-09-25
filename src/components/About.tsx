@@ -40,6 +40,7 @@ const TOKENS: Token[] = [
 ].map((tok, id) => ({ ...tok, id }))
 
 const FULL_LENGTH = TOKENS.reduce((n, t) => n + t.text.length, 0)
+const FULL_TEXT = TOKENS.map((t) => t.text).join('')
 const TICKS = 150
 const TICK_MS = 16
 const CHARS_PER_TICK = Math.ceil(FULL_LENGTH / TICKS)
@@ -128,8 +129,13 @@ const TerminalCard = () => {
         </span>
       </div>
       {/* Code */}
-      <pre className="p-5 text-sm leading-relaxed overflow-x-auto">
-        <code>
+      {/* The finished text sits invisibly in the same grid cell, so the card is its final size from
+          the first frame and typing never pushes the page down */}
+      <pre className="grid p-5 text-sm leading-relaxed overflow-x-auto">
+        <code aria-hidden="true" className="invisible" style={{ gridArea: '1 / 1' }}>
+          {FULL_TEXT}▌
+        </code>
+        <code style={{ gridArea: '1 / 1' }}>
           {visibleTokens(typedCount).map((tok) => (
             <span key={tok.id} style={{ color: tok.color }}>
               {tok.text}
