@@ -1,6 +1,7 @@
-import { Github, Linkedin, Twitter } from 'lucide-react'
+import { Github, Linkedin } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
+import XIcon from './icons/XIcon'
 
 const DiscordIcon = ({ size = 18 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -213,12 +214,14 @@ const Hero = () => {
               label: 'LinkedIn',
               href: 'https://www.linkedin.com/in/haidarabbas-balospura/',
               icon: <Linkedin size={18} />,
+              hover: '#0A66C2',
             },
-            { label: 'X', href: 'https://x.com/itz_hb_731', icon: <Twitter size={18} /> },
+            { label: 'X', href: 'https://x.com/itz_hb_731', icon: <XIcon size={18} /> },
             {
               label: 'Discord',
               href: 'https://discord.com/users/782117153699659816',
               icon: <DiscordIcon size={18} />,
+              hover: '#5865F2',
             },
           ].map((s) => (
             <a
@@ -227,8 +230,13 @@ const Hero = () => {
               aria-label={s.label}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-10 h-10 rounded-full border flex items-center justify-center transition-all hover:border-primary hover:shadow-[0_0_12px_hsl(var(--primary)/0.4)]"
-              style={{ borderColor: 'hsl(var(--border))', color: 'hsl(var(--muted-foreground))' }}
+              className="w-10 h-10 rounded-full border flex items-center justify-center transition-all text-muted-foreground hover:text-[color:var(--social-hover)] hover:border-primary hover:shadow-[0_0_12px_hsl(var(--primary)/0.4)]"
+              style={
+                {
+                  borderColor: 'hsl(var(--border))',
+                  '--social-hover': s.hover ?? 'hsl(var(--foreground))',
+                } as React.CSSProperties
+              }
             >
               {s.icon}
             </a>
