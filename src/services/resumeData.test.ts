@@ -96,6 +96,13 @@ describe('checkAgainstSource', () => {
     expect(checkAgainstSource(data, src)).toEqual([])
   })
 
+  it('does not let JavaScript excuse an invented Java skill', () => {
+    const data = structuredClone(SAMPLE_DATA)
+    data.skills[0].items.push('Java')
+    const src = `${SAMPLE_SOURCE}\nSkills: JavaScript, TypeScript`
+    expect(checkAgainstSource(data, src).map((w) => w.value)).toEqual(['Java'])
+  })
+
   it('accepts a lightly reworded skill when its words are in the original', () => {
     const data = structuredClone(SAMPLE_DATA)
     data.skills[0].items = ['Python scripting', 'SQL']

@@ -1,4 +1,5 @@
 import type { ResumeData, ResumeWarning, ResumeWarningKind } from '@/types/resumeData'
+import { hasPhrase, words } from './textMatch'
 
 // Compare letters and digits only, so "AI/ML Engineer" matches "AI ML  engineer".
 const squash = (s: string) => s.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '')
@@ -44,10 +45,11 @@ export function checkAgainstSource(data: ResumeData, source: string): ResumeWarn
 
   // Skills can be reworded a little (for example "RAG" to "RAG pipelines"), so also accept
   // an item whose every word appears somewhere in the original.
+  const sourceWordList = words(source)
   const skillInSource = (item: string) => {
-    if (inSource(item)) return true
-    const words: string[] = item.toLowerCase().match(/[\p{L}\p{N}+#.]+/gu) ?? []
-    return words.length > 0 && words.every((w) => w.length < 3 || sourceWords.has(w))
+    const itemWords = words(item)
+    if (hasPhrase(sourceWordList, itemWords)) return true
+    return itemWords.length > 0 && itemWords.every((w) => w.length < 3 || sourceWords.has(w))
   }
 
   const checkContent = (line: string) => {
