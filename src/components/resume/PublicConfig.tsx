@@ -2,14 +2,14 @@ import { Key } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { getLastModel, saveLastModel, savePublicConfig } from '@/services/authService'
 import { fetchModels, getDefaultModel } from '@/services/modelService'
-import type { ModelInfo, Provider } from '@/types/resume'
+import type { ModelInfo, Provider, ResumeSource } from '@/types/resume'
 import { LatexInput } from './LatexInput'
 import { ModelSelector } from './ModelSelector'
 import { ProviderSelector } from './ProviderSelector'
 import { TrustBadge } from './TrustBadge'
 
 interface PublicConfigProps {
-  onReady: (apiKey: string, provider: Provider, model: string, baseLatex: string) => void
+  onReady: (apiKey: string, provider: Provider, model: string, source: ResumeSource) => void
   onClear: () => void
 }
 
@@ -43,7 +43,7 @@ export function PublicConfig({ onReady, onClear }: PublicConfigProps) {
   function handleApply() {
     if (!apiKey.trim() || !latex.trim() || !model) return
     savePublicConfig(provider, apiKey.trim())
-    onReady(apiKey.trim(), provider, model, latex.trim())
+    onReady(apiKey.trim(), provider, model, { kind: 'latex', latex: latex.trim() })
   }
 
   const canApply = !!apiKey.trim() && !!latex.trim() && !!model

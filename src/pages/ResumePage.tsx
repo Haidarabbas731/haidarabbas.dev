@@ -1,5 +1,5 @@
 import { Sparkles } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import CustomCursor from '@/components/CustomCursor'
 import GrainOverlay from '@/components/GrainOverlay'
 import Navbar from '@/components/Navbar'
@@ -8,7 +8,7 @@ import { JobDescriptionInput } from '@/components/resume/JobDescriptionInput'
 import { PdfPreview } from '@/components/resume/PdfPreview'
 import { ResumeActions } from '@/components/resume/ResumeActions'
 import { useResumeTailor } from '@/hooks/useResumeTailor'
-import type { Provider, ResumeConfig } from '@/types/resume'
+import type { Provider, ResumeConfig, ResumeSource } from '@/types/resume'
 
 export default function ResumePage() {
   // Config set when user authenticates/configures
@@ -17,7 +17,7 @@ export default function ResumePage() {
     provider: 'openrouter',
     model: '',
     apiKey: null,
-    baseLatex: null,
+    source: null,
   })
 
   const [isConfigured, setIsConfigured] = useState(false)
@@ -31,19 +31,28 @@ export default function ResumePage() {
     status,
     error,
     canTailor,
+    canDownload,
     tailor,
     reset,
     download,
   } = useResumeTailor(config)
 
-  function handleReady(apiKey: string, provider: Provider, model: string, baseLatex: string) {
-    setConfig({ mode: null, provider, model, apiKey, baseLatex })
+  // The page owns the uploaded original's object URL, so it outlives the setup screen
+  useEffect(() => {
+    const url = config.source?.kind === 'text' ? config.source.originalPdfUrl : undefined
+    return () => {
+      if (url) URL.revokeObjectURL(url)
+    }
+  }, [config.source])
+
+  function handleReady(apiKey: string, provider: Provider, model: string, source: ResumeSource) {
+    setConfig({ mode: null, provider, model, apiKey, source })
     setIsConfigured(true)
   }
 
   function handleReconfigure() {
     setIsConfigured(false)
-    setConfig({ mode: null, provider: 'openrouter', model: '', apiKey: null, baseLatex: null })
+    setConfig({ mode: null, provider: 'openrouter', model: '', apiKey: null, source: null })
   }
 
   return (
@@ -179,7 +188,7 @@ export default function ResumePage() {
                     status={status}
                     error={error}
                     canTailor={canTailor}
-                    hasPdf={!!pdfUrl}
+                    hasPdf={canDownload}
                     onTailor={tailor}
                     onReset={reset}
                     onDownload={download}
@@ -198,7 +207,7 @@ export default function ResumePage() {
                     boxShadow: 'var(--shadow-card)',
                   }}
                 >
-                  <PdfPreview pdfUrl={pdfUrl} status={status} hasLatex={!!config.baseLatex} />
+                  <PdfPreview pdfUrl={pdfUrl} status={status} hasSource={!!config.source} />
                 </div>
               </div>
             </div>

@@ -5,14 +5,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { BASE_RESUME_LATEX } from '@/data/baseResume'
 import { clearStoredData, getLastModel, saveLastModel } from '@/services/authService'
 import { fetchModels, getDefaultModel } from '@/services/modelService'
-import type { AuthResult, ModelInfo, Provider } from '@/types/resume'
+import type { AuthResult, ModelInfo, Provider, ResumeSource } from '@/types/resume'
 import { ModelSelector } from './ModelSelector'
 import { OwnerLogin } from './OwnerLogin'
 import { ProviderSelector } from './ProviderSelector'
 import { PublicConfig } from './PublicConfig'
 
 interface AccessModeSelectorProps {
-  onReady: (apiKey: string, provider: Provider, model: string, baseLatex: string) => void
+  onReady: (apiKey: string, provider: Provider, model: string, source: ResumeSource) => void
 }
 
 export function AccessModeSelector({ onReady }: AccessModeSelectorProps) {
@@ -48,7 +48,7 @@ export function AccessModeSelector({ onReady }: AccessModeSelectorProps) {
     if (!ownerAuth?.providers) return
     const apiKey = ownerAuth.providers[ownerProvider]?.apiKey
     if (!apiKey) return
-    onReady(apiKey, ownerProvider, ownerModel, BASE_RESUME_LATEX)
+    onReady(apiKey, ownerProvider, ownerModel, { kind: 'latex', latex: BASE_RESUME_LATEX })
   }
 
   function handleOwnerModelChange(m: string) {
@@ -56,8 +56,13 @@ export function AccessModeSelector({ onReady }: AccessModeSelectorProps) {
     saveLastModel(ownerProvider, m)
   }
 
-  function handlePublicReady(apiKey: string, provider: Provider, model: string, baseLatex: string) {
-    onReady(apiKey, provider, model, baseLatex)
+  function handlePublicReady(
+    apiKey: string,
+    provider: Provider,
+    model: string,
+    source: ResumeSource
+  ) {
+    onReady(apiKey, provider, model, source)
   }
 
   function handleClearData() {

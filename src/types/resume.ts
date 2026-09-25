@@ -23,10 +23,20 @@ export interface AuthResult {
   error?: string
 }
 
+/** Where the resume to tailor comes from. */
+export type ResumeSource =
+  | {
+      kind: 'text'
+      text: string
+      /** Object URL of the uploaded PDF, shown as the "original" preview. Owned by the page. */
+      originalPdfUrl?: string
+    }
+  | { kind: 'latex'; latex: string }
+
 export interface ResumeConfig {
   mode: AccessMode
   provider: Provider
   model: string
   apiKey: string | null
-  baseLatex: string | null
+  source: ResumeSource | null
 }

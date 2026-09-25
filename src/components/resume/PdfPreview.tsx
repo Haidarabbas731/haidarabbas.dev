@@ -4,7 +4,7 @@ import type { TailorStatus } from '@/types/resume'
 interface PdfPreviewProps {
   pdfUrl: string | null
   status: TailorStatus
-  hasLatex: boolean
+  hasSource: boolean
 }
 
 const steps = [
@@ -13,9 +13,9 @@ const steps = [
   { label: 'Tailor', key: 'tailor' },
 ] as const
 
-function getActiveStep(hasLatex: boolean, _pdfUrl: string | null, status: TailorStatus) {
+function getActiveStep(hasSource: boolean, _pdfUrl: string | null, status: TailorStatus) {
   if (status === 'tailoring' || status === 'compiling' || status === 'done') return 'tailor'
-  if (hasLatex) return 'enter-jd'
+  if (hasSource) return 'enter-jd'
   return 'configure'
 }
 
@@ -25,9 +25,9 @@ function getLoadingPhaseLabel(status: TailorStatus) {
   return 'Processing...'
 }
 
-export function PdfPreview({ pdfUrl, status, hasLatex }: PdfPreviewProps) {
+export function PdfPreview({ pdfUrl, status, hasSource }: PdfPreviewProps) {
   const isLoading = status === 'compiling' || status === 'tailoring'
-  const activeStep = getActiveStep(hasLatex, pdfUrl, status)
+  const activeStep = getActiveStep(hasSource, pdfUrl, status)
 
   return (
     <div className="flex flex-col h-full gap-3">
@@ -151,7 +151,7 @@ export function PdfPreview({ pdfUrl, status, hasLatex }: PdfPreviewProps) {
                 className="text-sm text-center max-w-[200px] font-mono-jb"
                 style={{ color: 'hsl(var(--muted-foreground))' }}
               >
-                {!hasLatex
+                {!hasSource
                   ? 'Configure your settings to load a preview'
                   : 'Enter a job description and tailor'}
               </p>
