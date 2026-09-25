@@ -3,7 +3,86 @@
 @tailwind utilities;
 
 @layer base {
+  /* Light theme (default values); .dark overrides below */
   :root {
+    color-scheme: light;
+
+    --background: 40 20% 97%;
+    --foreground: 240 15% 8%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 240 15% 8%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 15% 8%;
+
+    --primary: 175 85% 26%;
+    --primary-foreground: 40 20% 98%;
+
+    --secondary: 40 12% 92%;
+    --secondary-foreground: 240 15% 8%;
+
+    --muted: 40 12% 92%;
+    --muted-foreground: 220 10% 38%;
+
+    --accent: 40 12% 90%;
+    --accent-foreground: 240 15% 8%;
+
+    --destructive: 0 72% 45%;
+    --destructive-foreground: 40 20% 98%;
+
+    --border: 40 10% 84%;
+    --input: 40 10% 84%;
+    --ring: 175 85% 26%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 40 15% 95%;
+    --sidebar-foreground: 220 10% 38%;
+    --sidebar-primary: 175 85% 26%;
+    --sidebar-primary-foreground: 40 20% 98%;
+    --sidebar-accent: 40 12% 92%;
+    --sidebar-accent-foreground: 240 15% 8%;
+    --sidebar-border: 40 10% 84%;
+    --sidebar-ring: 175 85% 26%;
+
+    /* Status */
+    --success: 175 85% 26%;
+
+    /* Window chrome (identical in both themes) */
+    --dot-red: 3 100% 67%;
+    --dot-yellow: 42 99% 59%;
+    --dot-green: 130 67% 47%;
+
+    /* Terminal card stays dark in both themes */
+    --terminal-bg: 0 0% 7%;
+    --terminal-fg: 40 10% 90%;
+    --terminal-muted: 220 10% 56%;
+    --terminal-key: 175 80% 50%;
+    --terminal-str: 123 37% 74%;
+    --terminal-border: 240 10% 20%;
+
+    /* Elevation */
+    --shadow-card: 0 4px 24px hsl(240 15% 8% / 0.08);
+    --shadow-popover: 0 8px 32px hsl(240 15% 8% / 0.12);
+    --shadow-popover-strong:
+      0 8px 32px hsl(240 15% 8% / 0.16), 0 0 0 1px hsl(var(--primary) / 0.12);
+
+    /* Overlays and texture */
+    --overlay: 240 15% 8%;
+    --overlay-alpha: 0.4;
+    --grain-opacity: 0.035;
+    --grain-blend: multiply;
+
+    /* Hero particle network (read from JS) */
+    --particle: 175 85% 30%;
+    --particle-dot-alpha: 0.35;
+    --particle-line-alpha: 0.14;
+  }
+
+  .dark {
+    color-scheme: dark;
+
     --background: 240 15% 4%;
     --foreground: 40 10% 90%;
 
@@ -32,8 +111,6 @@
     --input: 240 10% 14%;
     --ring: 175 80% 50%;
 
-    --radius: 0.5rem;
-
     --sidebar-background: 240 12% 6%;
     --sidebar-foreground: 220 10% 50%;
     --sidebar-primary: 175 80% 50%;
@@ -42,6 +119,23 @@
     --sidebar-accent-foreground: 40 10% 90%;
     --sidebar-border: 240 10% 14%;
     --sidebar-ring: 175 80% 50%;
+
+    --success: 175 80% 50%;
+
+    --terminal-border: 240 10% 14%;
+
+    --shadow-card: 0 4px 24px hsl(0 0% 0% / 0.2);
+    --shadow-popover: 0 8px 32px hsl(0 0% 0% / 0.35);
+    --shadow-popover-strong: 0 8px 32px hsl(0 0% 0% / 0.5), 0 0 0 1px hsl(var(--primary) / 0.08);
+
+    --overlay: 0 0% 0%;
+    --overlay-alpha: 0.8;
+    --grain-opacity: 0.04;
+    --grain-blend: normal;
+
+    --particle: 175 80% 60%;
+    --particle-dot-alpha: 0.4;
+    --particle-line-alpha: 0.15;
   }
 }
 
@@ -57,8 +151,15 @@
   }
   body {
     @apply bg-background text-foreground;
-    cursor: none;
     font-family: var(--font-body);
+  }
+  /* Custom cursor is only rendered on md+ with a fine pointer and motion allowed */
+  @media (hover: hover) and (pointer: fine) and (min-width: 768px) and (
+      prefers-reduced-motion: no-preference
+    ) {
+    body {
+      cursor: none;
+    }
   }
   html {
     scroll-behavior: smooth;
@@ -69,7 +170,7 @@
     font-family: var(--font-display);
   }
   ::selection {
-    background: hsl(175 80% 50% / 0.25);
+    background: hsl(var(--primary) / 0.25);
   }
 }
 
@@ -166,4 +267,69 @@
 
 .animate-shake {
   animation: shake 0.4s ease;
+}
+
+/* Theme switch: circular reveal (driven from ThemeToggle) or cross-fade */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+html[data-theme-transition="fade"] ::view-transition-old(root),
+html[data-theme-transition="fade"] ::view-transition-new(root),
+html[data-theme-transition="fade-fast"] ::view-transition-old(root),
+html[data-theme-transition="fade-fast"] ::view-transition-new(root) {
+  animation-duration: 200ms;
+  animation-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
+  animation-fill-mode: both;
+}
+
+html[data-theme-transition="fade"] ::view-transition-old(root),
+html[data-theme-transition="fade-fast"] ::view-transition-old(root) {
+  animation-name: theme-fade-out;
+}
+
+html[data-theme-transition="fade"] ::view-transition-new(root),
+html[data-theme-transition="fade-fast"] ::view-transition-new(root) {
+  animation-name: theme-fade-in;
+}
+
+html[data-theme-transition="fade-fast"] ::view-transition-old(root),
+html[data-theme-transition="fade-fast"] ::view-transition-new(root) {
+  animation-duration: 150ms;
+}
+
+@keyframes theme-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes theme-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Fallback when View Transitions are unsupported */
+html.theme-fading,
+html.theme-fading *,
+html.theme-fading *::before,
+html.theme-fading *::after {
+  transition:
+    background-color 200ms ease,
+    color 200ms ease,
+    border-color 200ms ease,
+    fill 200ms ease;
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  /* Navbar background is an inline style, so !important is required to override it */
+  nav {
+    /* biome-ignore lint/complexity/noImportantStyles: overrides Tailwind utility */
+    backdrop-filter: none !important;
+    /* biome-ignore lint/complexity/noImportantStyles: overrides inline style */
+    background: hsl(var(--background)) !important;
+  }
 }

@@ -1,9 +1,24 @@
 <!doctype html>
-<html lang="en" class="dark">
+<html lang="en" suppressHydrationWarning>
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#09090c" />
+  <script>
+    (() => {
+          try {
+            var t = localStorage.getItem('theme');
+            var dark = t === 'dark' || (t !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
+            var r = document.documentElement;
+            r.classList.add(dark ? 'dark' : 'light');
+            r.style.colorScheme = dark ? 'dark' : 'light';
+            var m = document.querySelector('meta[name="theme-color"]');
+            if (m) m.setAttribute('content', dark ? '#09090c' : '#faf9f6');
+          } catch (e) {}
+        })();
+  </script>
   <title>H.B. Portfolio</title>
   <meta name="description"
     content="Portfolio of an AI/ML Full Stack Engineer building production-grade intelligent systems." />

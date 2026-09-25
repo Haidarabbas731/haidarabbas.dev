@@ -33,7 +33,7 @@ export function TrustBadge() {
           style={{
             background: 'hsl(var(--card))',
             borderColor: 'hsl(var(--primary) / 0.2)',
-            boxShadow: '0 8px 32px hsl(0 0% 0% / 0.5), 0 0 0 1px hsl(var(--primary) / 0.08)',
+            boxShadow: 'var(--shadow-popover-strong)',
             color: 'hsl(var(--foreground) / 0.75)',
           }}
         >

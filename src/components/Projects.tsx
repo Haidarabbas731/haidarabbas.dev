@@ -49,9 +49,18 @@ const Projects = () => {
               className="flex items-center gap-2 px-4 py-3 border-b"
               style={{ borderColor: 'hsl(var(--border))' }}
             >
-              <span className="w-3 h-3 rounded-full" style={{ background: '#ff5f57' }} />
-              <span className="w-3 h-3 rounded-full" style={{ background: '#febc2e' }} />
-              <span className="w-3 h-3 rounded-full" style={{ background: '#28c840' }} />
+              <span
+                className="w-3 h-3 rounded-full"
+                style={{ background: 'hsl(var(--dot-red))' }}
+              />
+              <span
+                className="w-3 h-3 rounded-full"
+                style={{ background: 'hsl(var(--dot-yellow))' }}
+              />
+              <span
+                className="w-3 h-3 rounded-full"
+                style={{ background: 'hsl(var(--dot-green))' }}
+              />
               <span
                 className="ml-3 px-3 py-1 text-xs rounded truncate"
                 style={{

@@ -1,6 +1,7 @@
-import { Github, Linkedin, Twitter } from 'lucide-react'
+import { Github, Linkedin } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
+import XIcon from './icons/XIcon'
 
 const DiscordIcon = ({ size = 18 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -49,6 +50,25 @@ const Hero = () => {
 
     let animId: number | null = null
     let running = false
+
+    // Colours come from CSS tokens so the network follows the theme
+    let dotColor = ''
+    let lineRgb = ''
+    let lineAlpha = 0.15
+    const readColors = () => {
+      const cs = getComputedStyle(document.documentElement)
+      const hsl = cs.getPropertyValue('--particle').trim()
+      const dotAlpha = cs.getPropertyValue('--particle-dot-alpha').trim() || '0.4'
+      lineAlpha = Number.parseFloat(cs.getPropertyValue('--particle-line-alpha')) || 0.15
+      dotColor = `hsl(${hsl} / ${dotAlpha})`
+      lineRgb = hsl
+    }
+    readColors()
+    const themeObserver = new MutationObserver(readColors)
+    themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    })
     const particles: { x: number; y: number; vx: number; vy: number }[] = []
     const count = 45
     const maxDist = 120
@@ -81,7 +101,7 @@ const Hero = () => {
 
         ctx.beginPath()
         ctx.arc(p.x, p.y, 1.5, 0, Math.PI * 2)
-        ctx.fillStyle = 'hsla(175, 80%, 60%, 0.4)'
+        ctx.fillStyle = dotColor
         ctx.fill()
 
         for (let j = i + 1; j < count; j++) {
@@ -94,7 +114,7 @@ const Hero = () => {
             ctx.beginPath()
             ctx.moveTo(p.x, p.y)
             ctx.lineTo(q.x, q.y)
-            ctx.strokeStyle = `hsla(175, 80%, 60%, ${0.15 * (1 - dist / maxDist)})`
+            ctx.strokeStyle = `hsl(${lineRgb} / ${lineAlpha * (1 - dist / maxDist)})`
             ctx.stroke()
           }
         }
@@ -131,6 +151,7 @@ const Hero = () => {
 
     return () => {
       stop()
+      themeObserver.disconnect()
       io.disconnect()
       document.removeEventListener('visibilitychange', sync)
       window.removeEventListener('resize', resize)
@@ -193,12 +214,14 @@ const Hero = () => {
               label: 'LinkedIn',
               href: 'https://www.linkedin.com/in/haidarabbas-balospura/',
               icon: <Linkedin size={18} />,
+              hover: '#0A66C2',
             },
-            { label: 'X', href: 'https://x.com/itz_hb_731', icon: <Twitter size={18} /> },
+            { label: 'X', href: 'https://x.com/itz_hb_731', icon: <XIcon size={18} /> },
             {
               label: 'Discord',
               href: 'https://discord.com/users/782117153699659816',
               icon: <DiscordIcon size={18} />,
+              hover: '#5865F2',
             },
           ].map((s) => (
             <a
@@ -207,8 +230,13 @@ const Hero = () => {
               aria-label={s.label}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-10 h-10 rounded-full border flex items-center justify-center transition-all hover:border-primary hover:shadow-[0_0_12px_hsl(var(--primary)/0.4)]"
-              style={{ borderColor: 'hsl(var(--border))', color: 'hsl(var(--muted-foreground))' }}
+              className="w-10 h-10 rounded-full border flex items-center justify-center transition-all text-muted-foreground hover:text-[color:var(--social-hover)] hover:border-primary hover:shadow-[0_0_12px_hsl(var(--primary)/0.4)]"
+              style={
+                {
+                  borderColor: 'hsl(var(--border))',
+                  '--social-hover': s.hover ?? 'hsl(var(--foreground))',
+                } as React.CSSProperties
+              }
             >
               {s.icon}
             </a>
