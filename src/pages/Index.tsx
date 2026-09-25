@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import About from '@/components/About'
 // import OpenSource from "@/components/OpenSource";
 // import Blog from "@/components/Blog";
@@ -11,22 +13,33 @@ import Navbar from '@/components/Navbar'
 import Projects from '@/components/Projects'
 import Skills from '@/components/Skills'
 
-const Index = () => (
-  <main className="relative min-h-screen">
-    <CustomCursor />
-    <GrainOverlay />
-    <Navbar />
-    <Hero />
+const Index = () => {
+  const location = useLocation()
 
-    <About />
-    <Skills />
-    <Experience />
-    <Projects />
-    {/* <OpenSource /> */}
-    {/* <Blog /> */}
-    <Contact />
-    <Footer />
-  </main>
-)
+  useEffect(() => {
+    const state = location.state as { scrollTo?: string } | null
+    const id = state?.scrollTo ?? (location.hash ? location.hash.slice(1) : null)
+    if (!id) return
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+  }, [location.state, location.hash])
+
+  return (
+    <main className="relative min-h-screen">
+      <CustomCursor />
+      <GrainOverlay />
+      <Navbar />
+      <Hero />
+
+      <About />
+      <Skills />
+      <Experience />
+      <Projects />
+      {/* <OpenSource /> */}
+      {/* <Blog /> */}
+      <Contact />
+      <Footer />
+    </main>
+  )
+}
 
 export default Index

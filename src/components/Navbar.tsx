@@ -1,16 +1,45 @@
+import type { MouseEvent } from 'react'
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 const navLinks = [
-  { label: 'About', href: '#about' },
-  { label: 'Skills', href: '#skills' },
-  { label: 'Experience', href: '#experience' },
-  { label: 'Projects', href: '#projects' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'About', id: 'about' },
+  { label: 'Skills', id: 'skills' },
+  { label: 'Experience', id: 'experience' },
+  { label: 'Projects', id: 'projects' },
+  { label: 'Contact', id: 'contact' },
 ]
+
+function isPlainLeftClick(e: MouseEvent) {
+  return e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey
+}
 
 const Navbar = () => {
   const [open, setOpen] = useState(false)
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  const goToSection = (id: string) => (e: MouseEvent) => {
+    if (!isPlainLeftClick(e)) return
+    e.preventDefault()
+    setOpen(false)
+    if (location.pathname === '/') {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+    } else {
+      navigate('/', { state: { scrollTo: id } })
+    }
+  }
+
+  const goHome = (e: MouseEvent) => {
+    if (!isPlainLeftClick(e)) return
+    e.preventDefault()
+    setOpen(false)
+    if (location.pathname === '/') {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    } else {
+      navigate('/')
+    }
+  }
 
   return (
     <nav
@@ -22,8 +51,9 @@ const Navbar = () => {
     >
       <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
         <a
-          href="#"
-          className="text-lg font-bold tracking-tight"
+          href="/"
+          onClick={goHome}
+          className="text-2xl font-bold tracking-tight"
           style={{ fontFamily: 'var(--font-mono)', color: 'hsl(var(--primary))' }}
         >
           HB
@@ -33,8 +63,9 @@ const Navbar = () => {
         <div className="hidden md:flex items-center gap-8">
           {navLinks.map((l) => (
             <a
-              key={l.href}
-              href={l.href}
+              key={l.id}
+              href={`/#${l.id}`}
+              onClick={goToSection(l.id)}
               className="text-sm tracking-wide transition-colors hover:text-primary"
               style={{ fontFamily: 'var(--font-mono)', color: 'hsl(var(--muted-foreground))' }}
             >
@@ -81,9 +112,9 @@ const Navbar = () => {
         >
           {navLinks.map((l) => (
             <a
-              key={l.href}
-              href={l.href}
-              onClick={() => setOpen(false)}
+              key={l.id}
+              href={`/#${l.id}`}
+              onClick={goToSection(l.id)}
               className="text-sm tracking-wide"
               style={{ fontFamily: 'var(--font-mono)', color: 'hsl(var(--muted-foreground))' }}
             >
