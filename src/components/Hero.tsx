@@ -44,10 +44,14 @@ const Hero = () => {
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-    let animId: number
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+    let animId: number | null = null
+    let running = false
     const particles: { x: number; y: number; vx: number; vy: number }[] = []
-    const count = 80
+    const count = 45
     const maxDist = 120
+    const maxDistSq = maxDist * maxDist
 
     const resize = () => {
       canvas.width = window.innerWidth
@@ -83,8 +87,9 @@ const Hero = () => {
           const q = particles[j]
           const dx = p.x - q.x
           const dy = p.y - q.y
-          const dist = Math.sqrt(dx * dx + dy * dy)
-          if (dist < maxDist) {
+          const distSq = dx * dx + dy * dy
+          if (distSq < maxDistSq) {
+            const dist = Math.sqrt(distSq)
             ctx.beginPath()
             ctx.moveTo(p.x, p.y)
             ctx.lineTo(q.x, q.y)
@@ -95,10 +100,38 @@ const Hero = () => {
       }
       animId = requestAnimationFrame(draw)
     }
-    draw()
+
+    const start = () => {
+      if (running) return
+      running = true
+      draw()
+    }
+    const stop = () => {
+      running = false
+      if (animId !== null) cancelAnimationFrame(animId)
+      animId = null
+    }
+
+    let isIntersecting = false
+    const sync = () => {
+      if (isIntersecting && !document.hidden) start()
+      else stop()
+    }
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        isIntersecting = entry.isIntersecting
+        sync()
+      },
+      { threshold: 0 }
+    )
+    io.observe(canvas)
+    document.addEventListener('visibilitychange', sync)
 
     return () => {
-      cancelAnimationFrame(animId)
+      stop()
+      io.disconnect()
+      document.removeEventListener('visibilitychange', sync)
       window.removeEventListener('resize', resize)
     }
   }, [])

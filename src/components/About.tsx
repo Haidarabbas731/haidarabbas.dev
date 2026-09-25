@@ -1,63 +1,157 @@
+import { useEffect, useRef, useState } from 'react'
 import SectionTitle from './SectionTitle'
+
+type Token = { id: number; text: string; color: string }
+
+const FG = 'hsl(var(--foreground))'
+const KEY = 'hsl(var(--primary))'
+const STR = '#a5d6a7'
+
+const TOKENS: Token[] = [
+  { text: 'haidar', color: FG },
+  { text: ' ', color: FG },
+  { text: '=', color: KEY },
+  { text: ' {\n', color: FG },
+  { text: '    ', color: FG },
+  { text: '"role"', color: KEY },
+  { text: ': ', color: FG },
+  { text: '"AI/ML Engineer"', color: STR },
+  { text: ',\n', color: FG },
+  { text: '    ', color: FG },
+  { text: '"location"', color: KEY },
+  { text: ': ', color: FG },
+  { text: '"Gujarat, India 🇮🇳"', color: STR },
+  { text: ',\n', color: FG },
+  { text: '    ', color: FG },
+  { text: '"focus"', color: KEY },
+  { text: ': [', color: FG },
+  { text: '"LLMs"', color: STR },
+  { text: ', ', color: FG },
+  { text: '"NLP"', color: STR },
+  { text: ', ', color: FG },
+  { text: '"Agents"', color: STR },
+  { text: '],\n', color: FG },
+  { text: '    ', color: FG },
+  { text: '"currently_building"', color: KEY },
+  { text: ': ', color: FG },
+  { text: '"Autonomous AI systems"', color: STR },
+  { text: '\n}', color: FG },
+].map((tok, id) => ({ ...tok, id }))
+
+const FULL_LENGTH = TOKENS.reduce((n, t) => n + t.text.length, 0)
+const TICKS = 150
+const TICK_MS = 16
+const CHARS_PER_TICK = Math.ceil(FULL_LENGTH / TICKS)
+
+function visibleTokens(count: number): Token[] {
+  let remaining = count
+  const out: Token[] = []
+  for (const tok of TOKENS) {
+    if (remaining <= 0) break
+    const take = Math.min(tok.text.length, remaining)
+    out.push({ id: tok.id, text: tok.text.slice(0, take), color: tok.color })
+    remaining -= take
+  }
+  return out
+}
+
+const TerminalCard = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [typedCount, setTypedCount] = useState(0)
+  const [reducedMotion, setReducedMotion] = useState(false)
+
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
+    setReducedMotion(mq.matches)
+  }, [])
+
+  useEffect(() => {
+    if (reducedMotion) {
+      setTypedCount(FULL_LENGTH)
+      return
+    }
+
+    const el = containerRef.current
+    if (!el) return
+
+    let intervalId: ReturnType<typeof setInterval> | null = null
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting || intervalId !== null) return
+        intervalId = setInterval(() => {
+          setTypedCount((prev) => {
+            const next = prev + CHARS_PER_TICK
+            if (next >= FULL_LENGTH && intervalId !== null) {
+              clearInterval(intervalId)
+              intervalId = null
+            }
+            return Math.min(next, FULL_LENGTH)
+          })
+        }, TICK_MS)
+        io.disconnect()
+      },
+      { threshold: 0.3 }
+    )
+    io.observe(el)
+
+    return () => {
+      io.disconnect()
+      if (intervalId !== null) clearInterval(intervalId)
+    }
+  }, [reducedMotion])
+
+  const done = typedCount >= FULL_LENGTH
+
+  return (
+    <div
+      ref={containerRef}
+      className="rounded-lg border overflow-hidden"
+      style={{
+        background: '#111',
+        borderColor: 'hsl(var(--primary) / 0.3)',
+        boxShadow: '0 0 30px hsl(var(--primary) / 0.1)',
+        fontFamily: 'var(--font-mono)',
+      }}
+    >
+      {/* Title bar */}
+      <div
+        className="flex items-center gap-2 px-4 py-3 border-b"
+        style={{ borderColor: 'hsl(var(--border))' }}
+      >
+        <span className="w-3 h-3 rounded-full" style={{ background: '#ff5f57' }} />
+        <span className="w-3 h-3 rounded-full" style={{ background: '#febc2e' }} />
+        <span className="w-3 h-3 rounded-full" style={{ background: '#28c840' }} />
+        <span className="ml-3 text-xs" style={{ color: 'hsl(var(--muted-foreground))' }}>
+          about.py
+        </span>
+      </div>
+      {/* Code */}
+      <pre className="p-5 text-sm leading-relaxed overflow-x-auto">
+        <code>
+          {visibleTokens(typedCount).map((tok) => (
+            <span key={tok.id} style={{ color: tok.color }}>
+              {tok.text}
+            </span>
+          ))}
+          <span
+            className={done && !reducedMotion ? 'animate-blink' : ''}
+            style={{ color: 'hsl(var(--primary))' }}
+          >
+            ▌
+          </span>
+        </code>
+      </pre>
+    </div>
+  )
+}
 
 const About = () => (
   <section className="pt-4 md:pt-8 pb-16 md:pb-20 px-6 max-w-6xl mx-auto">
     <SectionTitle number="01" title="About" id="about" />
 
     <div className="grid md:grid-cols-2 gap-12 md:gap-16 items-center">
-      {/* Terminal Card */}
-      <div
-        className="rounded-lg border overflow-hidden"
-        style={{
-          background: '#111',
-          borderColor: 'hsl(var(--primary) / 0.3)',
-          boxShadow: '0 0 30px hsl(var(--primary) / 0.1)',
-          fontFamily: 'var(--font-mono)',
-        }}
-      >
-        {/* Title bar */}
-        <div
-          className="flex items-center gap-2 px-4 py-3 border-b"
-          style={{ borderColor: 'hsl(var(--border))' }}
-        >
-          <span className="w-3 h-3 rounded-full" style={{ background: '#ff5f57' }} />
-          <span className="w-3 h-3 rounded-full" style={{ background: '#febc2e' }} />
-          <span className="w-3 h-3 rounded-full" style={{ background: '#28c840' }} />
-          <span className="ml-3 text-xs" style={{ color: 'hsl(var(--muted-foreground))' }}>
-            about.py
-          </span>
-        </div>
-        {/* Code */}
-        <pre className="p-5 text-sm leading-relaxed overflow-x-auto">
-          <code>
-            <span style={{ color: 'hsl(var(--foreground))' }}>haidar</span>{' '}
-            <span style={{ color: 'hsl(var(--primary))' }}>=</span> {'{\n'}
-            {'    '}
-            <span style={{ color: 'hsl(var(--primary))' }}>"role"</span>:{' '}
-            <span style={{ color: '#a5d6a7' }}>"AI/ML Engineer"</span>,{'\n'}
-            {'    '}
-            <span style={{ color: 'hsl(var(--primary))' }}>"location"</span>:{' '}
-            <span style={{ color: '#a5d6a7' }}>"Gujarat, India 🇮🇳"</span>,{'\n'}
-            {'    '}
-            <span style={{ color: 'hsl(var(--primary))' }}>"focus"</span>: {'['}
-            <span style={{ color: '#a5d6a7' }}>"LLMs"</span>,{' '}
-            <span style={{ color: '#a5d6a7' }}>"NLP"</span>,{' '}
-            <span style={{ color: '#a5d6a7' }}>"Agents"</span>
-            {']'},{'\n'}
-            {'    '}
-            <span style={{ color: 'hsl(var(--primary))' }}>"currently_building"</span>:{' '}
-            <span style={{ color: '#a5d6a7' }}>"Autonomous AI systems"</span>,{'\n'}
-            {'    '}
-            <span style={{ color: 'hsl(var(--primary))' }}>"open_to_work"</span>:{' '}
-            <span style={{ color: '#f48fb1' }}>True</span>
-            {'\n'}
-            {'}'}
-            <span className="animate-blink" style={{ color: 'hsl(var(--primary))' }}>
-              ▌
-            </span>
-          </code>
-        </pre>
-      </div>
+      <TerminalCard />
 
       {/* Bio */}
       <div>

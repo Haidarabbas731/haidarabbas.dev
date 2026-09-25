@@ -40,7 +40,19 @@ const TimelineEntry = ({ exp, index }: { exp: (typeof experiences)[0]; index: nu
             className="text-sm mb-3"
             style={{ color: 'hsl(var(--primary))', fontFamily: 'var(--font-mono)' }}
           >
-            {exp.company} · {exp.period}
+            {exp.companyUrl ? (
+              <a
+                href={exp.companyUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:underline"
+              >
+                {exp.company}
+              </a>
+            ) : (
+              exp.company
+            )}{' '}
+            · {exp.period}
           </div>
           <ul
             className={`space-y-2 text-sm ${isLeft ? 'text-right' : 'text-left'}`}
@@ -75,7 +87,19 @@ const TimelineEntry = ({ exp, index }: { exp: (typeof experiences)[0]; index: nu
           className="text-sm mb-2"
           style={{ color: 'hsl(var(--primary))', fontFamily: 'var(--font-mono)' }}
         >
-          {exp.company} · {exp.period}
+          {exp.companyUrl ? (
+            <a
+              href={exp.companyUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline"
+            >
+              {exp.company}
+            </a>
+          ) : (
+            exp.company
+          )}{' '}
+          · {exp.period}
         </div>
         <ul className="space-y-1 text-sm" style={{ color: 'hsl(var(--muted-foreground))' }}>
           {exp.highlights.map((h, i) => (

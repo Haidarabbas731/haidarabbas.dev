@@ -20,8 +20,8 @@ const Index = () => (
 
     <About />
     <Skills />
-    <Projects />
     <Experience />
+    <Projects />
     {/* <OpenSource /> */}
     {/* <Blog /> */}
     <Contact />

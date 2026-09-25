@@ -1,5 +1,6 @@
 export interface Experience {
   company: string
+  companyUrl?: string
   role: string
   period: string
   highlights: string[]
@@ -8,6 +9,7 @@ export interface Experience {
 export const experiences: Experience[] = [
   {
     company: 'Popai Technologies',
+    companyUrl: 'https://popai.agency',
     role: 'AI/ML Engineer',
     period: 'Mar 2025 — Present',
     highlights: [
@@ -18,6 +20,7 @@ export const experiences: Experience[] = [
   },
   {
     company: 'MantiQ Infotech',
+    companyUrl: 'https://mantiqinfotech.com/',
     role: 'AI Engineer',
     period: 'Jan 2025 — Mar 2025',
     highlights: [
@@ -28,6 +31,7 @@ export const experiences: Experience[] = [
   },
   {
     company: 'MantiQ Infotech',
+    companyUrl: 'https://mantiqinfotech.com/',
     role: 'Node.js Developer & AI Researcher',
     period: 'July 2023 — Dec 2024',
     highlights: [

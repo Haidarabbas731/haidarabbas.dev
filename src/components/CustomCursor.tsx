@@ -9,10 +9,13 @@ const CustomCursor = () => {
     const trail = trailRef.current
     if (!cursor || !trail) return
 
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
     let mouseX = 0
     let mouseY = 0
     let trailX = 0
     let trailY = 0
+    let animId: number | null = null
 
     const onMouseMove = (e: MouseEvent) => {
       mouseX = e.clientX
@@ -24,13 +27,27 @@ const CustomCursor = () => {
       trailX += (mouseX - trailX) * 0.15
       trailY += (mouseY - trailY) * 0.15
       trail.style.transform = `translate(${trailX - 20}px, ${trailY - 20}px)`
-      requestAnimationFrame(animate)
+      animId = requestAnimationFrame(animate)
+    }
+
+    const onVisibility = () => {
+      if (document.hidden) {
+        if (animId !== null) cancelAnimationFrame(animId)
+        animId = null
+      } else if (animId === null) {
+        animate()
+      }
     }
 
     window.addEventListener('mousemove', onMouseMove)
+    document.addEventListener('visibilitychange', onVisibility)
     animate()
 
-    return () => window.removeEventListener('mousemove', onMouseMove)
+    return () => {
+      if (animId !== null) cancelAnimationFrame(animId)
+      window.removeEventListener('mousemove', onMouseMove)
+      document.removeEventListener('visibilitychange', onVisibility)
+    }
   }, [])
 
   return (
