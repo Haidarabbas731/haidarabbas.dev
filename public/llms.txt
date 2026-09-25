@@ -1,0 +1,24 @@
+# Haidarabbas Balospura
+
+> AI/ML engineer and full-stack developer based in Gujarat, India. Builds production-ready LLM systems, fine-tuning pipelines, and autonomous agents.
+
+This is a personal portfolio site with one main page and a free resume tailoring tool.
+
+## Pages
+
+- [Portfolio](https://haidarabbas.dev/): About, background, experience, featured project, and contact
+- [Resume AI](https://haidarabbas.dev/resume): Free tool that tailors a resume to a job description. It runs in the browser with the visitor's own API key
+
+## Projects
+
+- [Ragify](https://ragifyai.netlify.app/): A production RAG app for chatting with your own documents. [Source code](https://github.com/Haidarabbas731/Ragify)
+
+## Profiles
+
+- [GitHub](https://github.com/haidarabbas731)
+- [LinkedIn](https://www.linkedin.com/in/haidarabbas-balospura/)
+- [X](https://x.com/itz_hb_731)
+
+## Contact
+
+- Email: haidarabbasbalospura@gmail.com
