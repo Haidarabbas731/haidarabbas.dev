@@ -206,6 +206,60 @@ describe('useResumeTailor with a LaTeX source', () => {
     expect(hook.result.current.updatedLatex).toBe('\\documentclass{article}')
     expect(hook.result.current.pdfUrl).toBe('blob:tailored')
     expect(hook.result.current.canDownload).toBe(true)
-    expect(revoked).toContain('blob:base')
+    // The compiled original is kept for comparison and only released on unmount
+    expect(revoked).not.toContain('blob:base')
+    hook.unmount()
+    expect(revoked).toEqual(expect.arrayContaining(['blob:base', 'blob:tailored']))
+  })
+})
+
+describe('useResumeTailor view switching', () => {
+  it('starts on the original, jumps to the tailored PDF, and can flip back and forth', async () => {
+    const hook = await setup(textSource)
+    expect(hook.result.current.view).toBe('original')
+    expect(hook.result.current.canCompare).toBe(false)
+
+    fill(hook)
+    await act(() => hook.result.current.tailor())
+    expect(hook.result.current.view).toBe('tailored')
+    expect(hook.result.current.canCompare).toBe(true)
+
+    act(() => hook.result.current.setView('original'))
+    expect(hook.result.current.pdfUrl).toBe('blob:original')
+    expect(hook.result.current.showing).toBe('original')
+    // Download still gives the tailored file, whatever is on screen
+    expect(hook.result.current.canDownload).toBe(true)
+
+    act(() => hook.result.current.setView('changes'))
+    expect(hook.result.current.pdfUrl).toBe('blob:made-1')
+
+    act(() => hook.result.current.setView('tailored'))
+    expect(hook.result.current.showing).toBe('tailored')
+  })
+
+  it('downloads the tailored PDF even while the original is showing', async () => {
+    const hook = await setup(textSource)
+    fill(hook)
+    await act(() => hook.result.current.tailor())
+    act(() => hook.result.current.setView('original'))
+
+    let href = ''
+    const click = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(function (
+      this: HTMLAnchorElement
+    ) {
+      href = this.href
+    })
+    act(() => hook.result.current.download())
+    expect(href).toBe('blob:made-1')
+    click.mockRestore()
+  })
+
+  it('returns to the original view on reset', async () => {
+    const hook = await setup(textSource)
+    fill(hook)
+    await act(() => hook.result.current.tailor())
+    await act(() => hook.result.current.reset())
+    expect(hook.result.current.view).toBe('original')
+    expect(hook.result.current.canCompare).toBe(false)
   })
 })

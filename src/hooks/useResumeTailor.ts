@@ -7,6 +7,9 @@ import type { ResumeData, ResumeWarning } from '@/types/resumeData'
 
 type Showing = 'original' | 'tailored' | null
 
+/** What the right-hand panel is showing. */
+export type ResultView = 'tailored' | 'original' | 'changes'
+
 interface TailorResult {
   data: ResumeData
   warnings: ResumeWarning[]
@@ -23,8 +26,9 @@ function downloadName(data: ResumeData | null): string {
 export function useResumeTailor(config: ResumeConfig) {
   const [jobDescription, setJobDescription] = useState('')
   const [additionalNotes, setAdditionalNotes] = useState('')
-  const [pdfUrl, setPdfUrl] = useState<string | null>(null)
-  const [showing, setShowing] = useState<Showing>(null)
+  const [originalUrl, setOriginalUrl] = useState<string | null>(null)
+  const [tailoredUrl, setTailoredUrl] = useState<string | null>(null)
+  const [view, setView] = useState<ResultView>('original')
   const [updatedLatex, setUpdatedLatex] = useState<string | null>(null)
   const [result, setResult] = useState<TailorResult | null>(null)
   const [status, setStatus] = useState<TailorStatus>('idle')
@@ -33,20 +37,31 @@ export function useResumeTailor(config: ResumeConfig) {
   const { provider, model, apiKey, source } = config
 
   // Only object URLs created here are revoked here. An uploaded original belongs to the page.
-  const ownedUrl = useRef<string | null>(null)
+  const ownedOriginal = useRef<string | null>(null)
+  const ownedTailored = useRef<string | null>(null)
   // Bumped whenever a result should be discarded (new run, reset, new source)
   const runId = useRef(0)
 
-  const showPdf = useCallback((url: string | null, owned: boolean, kind: Showing) => {
-    if (ownedUrl.current && ownedUrl.current !== url) URL.revokeObjectURL(ownedUrl.current)
-    ownedUrl.current = owned ? url : null
-    setPdfUrl(url)
-    setShowing(kind)
+  const setOriginal = useCallback((url: string | null, owned: boolean) => {
+    if (ownedOriginal.current && ownedOriginal.current !== url) {
+      URL.revokeObjectURL(ownedOriginal.current)
+    }
+    ownedOriginal.current = owned ? url : null
+    setOriginalUrl(url)
+  }, [])
+
+  const setTailored = useCallback((url: string | null) => {
+    if (ownedTailored.current && ownedTailored.current !== url) {
+      URL.revokeObjectURL(ownedTailored.current)
+    }
+    ownedTailored.current = url
+    setTailoredUrl(url)
   }, [])
 
   useEffect(
     () => () => {
-      if (ownedUrl.current) URL.revokeObjectURL(ownedUrl.current)
+      if (ownedOriginal.current) URL.revokeObjectURL(ownedOriginal.current)
+      if (ownedTailored.current) URL.revokeObjectURL(ownedTailored.current)
     },
     []
   )
@@ -55,11 +70,11 @@ export function useResumeTailor(config: ResumeConfig) {
   const loadOriginal = useCallback(
     async (run: number) => {
       if (!source) {
-        showPdf(null, false, null)
+        setOriginal(null, false)
         return
       }
       if (source.kind === 'text') {
-        showPdf(source.originalPdfUrl ?? null, false, source.originalPdfUrl ? 'original' : null)
+        setOriginal(source.originalPdfUrl ?? null, false)
         setStatus('idle')
         return
       }
@@ -70,7 +85,7 @@ export function useResumeTailor(config: ResumeConfig) {
           URL.revokeObjectURL(url)
           return
         }
-        showPdf(url, true, 'original')
+        setOriginal(url, true)
         setStatus('idle')
       } catch (err: unknown) {
         if (run !== runId.current) return
@@ -78,7 +93,7 @@ export function useResumeTailor(config: ResumeConfig) {
         setStatus('error')
       }
     },
-    [source, showPdf]
+    [source, setOriginal]
   )
 
   // Load the original whenever the source changes
@@ -87,11 +102,13 @@ export function useResumeTailor(config: ResumeConfig) {
     setResult(null)
     setUpdatedLatex(null)
     setError(null)
+    setTailored(null)
+    setView('original')
     void loadOriginal(run)
     return () => {
       runId.current++
     }
-  }, [loadOriginal])
+  }, [loadOriginal, setTailored])
 
   const tailor = useCallback(async () => {
     if (!source || !jobDescription.trim() || !apiKey || !model) return
@@ -119,7 +136,8 @@ export function useResumeTailor(config: ResumeConfig) {
           return
         }
         setResult(tailored)
-        showPdf(url, true, 'tailored')
+        setTailored(url)
+        setView('tailored')
       } else {
         const latex = await tailorResume(
           provider,
@@ -138,7 +156,8 @@ export function useResumeTailor(config: ResumeConfig) {
           URL.revokeObjectURL(url)
           return
         }
-        showPdf(url, true, 'tailored')
+        setTailored(url)
+        setView('tailored')
       }
       setStatus('done')
     } catch (err: unknown) {
@@ -146,7 +165,7 @@ export function useResumeTailor(config: ResumeConfig) {
       setError(err instanceof Error ? err.message : 'An unexpected error occurred')
       setStatus('error')
     }
-  }, [provider, model, jobDescription, additionalNotes, apiKey, source, showPdf])
+  }, [provider, model, jobDescription, additionalNotes, apiKey, source, setTailored])
 
   const reset = useCallback(async () => {
     const run = ++runId.current
@@ -156,18 +175,24 @@ export function useResumeTailor(config: ResumeConfig) {
     setUpdatedLatex(null)
     setError(null)
     setStatus('idle')
+    setTailored(null)
+    setView('original')
     await loadOriginal(run)
-  }, [loadOriginal])
+  }, [loadOriginal, setTailored])
 
   const download = useCallback(() => {
-    if (!pdfUrl || showing !== 'tailored') return
+    if (!tailoredUrl) return
     const a = document.createElement('a')
-    a.href = pdfUrl
+    a.href = tailoredUrl
     a.download = downloadName(result?.data ?? null)
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)
-  }, [pdfUrl, showing, result])
+  }, [tailoredUrl, result])
+
+  // The PDF panel follows the chosen view. "Changes" is drawn by the page, so it keeps the tailored PDF.
+  const pdfUrl = view === 'original' ? originalUrl : (tailoredUrl ?? originalUrl)
+  const showing: Showing = pdfUrl ? (pdfUrl === tailoredUrl ? 'tailored' : 'original') : null
 
   const hasSource =
     !!source && (source.kind === 'text' ? !!source.text.trim() : !!source.latex.trim())
@@ -187,13 +212,18 @@ export function useResumeTailor(config: ResumeConfig) {
     setAdditionalNotes,
     pdfUrl,
     showing,
+    view,
+    setView,
+    originalUrl,
+    tailoredUrl,
     updatedLatex,
     resumeData: result?.data ?? null,
     warnings: result?.warnings ?? [],
     status,
     error,
     canTailor,
-    canDownload: showing === 'tailored',
+    canDownload: !!tailoredUrl,
+    canCompare: !!tailoredUrl && !!originalUrl,
     tailor,
     reset,
     download,
