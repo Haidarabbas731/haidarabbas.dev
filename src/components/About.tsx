@@ -169,7 +169,7 @@ const About = () => (
           className="text-lg leading-relaxed mb-4"
           style={{ color: 'hsl(var(--foreground) / 0.85)' }}
         >
-          I work with large language models, fine-tuning pipelines, and autonomous agents — creating
+          I work with large language models, fine-tuning pipelines, and autonomous agents, creating
           systems that integrate into real workflows and operate reliably at scale.
         </p>
         <p className="text-lg leading-relaxed" style={{ color: 'hsl(var(--foreground) / 0.85)' }}>

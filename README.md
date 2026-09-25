@@ -1,4 +1,4 @@
-# Haidarabbas Balospura — Portfolio
+# Haidarabbas Balospura - Portfolio
 
 > Personal portfolio and AI resume tailoring tool built with React, TypeScript, and Vite.
 
@@ -10,8 +10,8 @@
 
 ## Features
 
-- **Portfolio** — About, Skills, Projects, Experience, Contact sections with particle network and typewriter animations
-- **Resume AI** — AI-powered resume tailoring at `/resume`
+- **Portfolio**: About, Skills, Projects, Experience, Contact sections with particle network and typewriter animations
+- **Resume AI**: AI-powered resume tailoring at `/resume`
   - Dual-mode: **Owner** (password-protected, uses server-side API keys) and **Public** (users bring their own key)
   - **Multi-provider**: Gemini (Google AI) and OpenRouter (200+ models including Claude, GPT, Llama)
   - Dynamic model selection fetched live from each provider's API
@@ -130,7 +130,7 @@ portfolio/
 
 ---
 
-## Resume AI — How It Works
+## Resume AI: How It Works
 
 ### Dual-Mode Access
 
@@ -157,8 +157,8 @@ Select provider + model             Select model from dynamic list
 
 ### Privacy
 
-- Owner API keys live in Netlify environment variables — never in the browser bundle
-- Public users' API keys are stored only in `localStorage` — never sent to any server
+- Owner API keys live in Netlify environment variables, never in the browser bundle
+- Public users' API keys are stored only in `localStorage`, never sent to any server
 - All AI calls are made directly from the browser to the provider (Google / OpenRouter)
 
 ---

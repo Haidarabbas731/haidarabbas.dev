@@ -13,7 +13,7 @@ export async function authenticateOwner(password: string): Promise<AuthResult> {
     body: JSON.stringify({ password }),
   })
 
-  // Try to parse JSON — if it fails, the function likely crashed
+  // Try to parse JSON. If it fails, the function likely crashed
   let data: AuthResult
   try {
     data = await response.json()

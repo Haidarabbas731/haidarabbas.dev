@@ -136,7 +136,7 @@ const OpenSource = () => {
           style={{ fontFamily: 'var(--font-mono)', color: 'hsl(var(--foreground))' }}
           className="text-sm"
         >
-          ▍<strong>{displayWeeks ? total.toLocaleString() : '—'}</strong> contributions in the last
+          ▍<strong>{displayWeeks ? total.toLocaleString() : '-'}</strong> contributions in the last
           year
         </span>
       </div>

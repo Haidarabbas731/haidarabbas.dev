@@ -1,7 +1,7 @@
 export const BASE_RESUME_LATEX = `\\documentclass[letterpaper,10pt]{article}
 
 % ──────────────────────────────────────────────
-% ATS-Friendly Resume — No graphics, no columns,
+% ATS-Friendly Resume: No graphics, no columns,
 % no tables-within-tables, clean text extraction.
 % ──────────────────────────────────────────────
 
@@ -82,7 +82,7 @@ AI/ML Engineer with expertise in fine-tuning Large Language Models, building mul
 \\section{Professional Experience}
 
 \\experienceentry
-  {AI/ML Engineer --- Contractor}
+  {AI/ML Engineer, Contractor}
   {PopAI Agency}
   {Remote}
   {Mar 2025 -- Present}
@@ -123,7 +123,7 @@ AI/ML Engineer with expertise in fine-tuning Large Language Models, building mul
 \\projectentry{Generative AI Applications \\& Model Development}
 \\begin{itemize}
   \\item Developed and fine-tuned transformer-based models for text generation and predictive analytics; researched and implemented state-of-the-art NLP techniques.
-  \\item Built multi-source RAG chatbot, data analyst agent, SEO specialist agent, market research agent, and content quality checker agent---each deployed as autonomous AI-driven tools.
+  \\item Built multi-source RAG chatbot, data analyst agent, SEO specialist agent, market research agent, and content quality checker agent, each deployed as autonomous AI-driven tools.
 \\end{itemize}
 
 \\section{Technical Skills}

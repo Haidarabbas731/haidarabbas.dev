@@ -62,8 +62,8 @@ export function TrustBadge() {
             <strong style={{ color: 'hsl(var(--primary) / 0.9)', fontWeight: 600 }}>
               only in your browser's local storage
             </strong>
-            . Nothing is sent to or stored on our servers — AI calls go directly from your browser
-            to Google or OpenRouter.
+            . Nothing is sent to or stored on our servers. AI calls go directly from your browser to
+            Google or OpenRouter.
           </p>
 
           {/* Divider + footer pill */}

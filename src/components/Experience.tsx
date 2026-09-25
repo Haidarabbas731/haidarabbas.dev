@@ -84,7 +84,7 @@ const TimelineEntry = ({ exp, index }: { exp: (typeof experiences)[0]; index: nu
         </div>
         <ul className="space-y-1 text-sm" style={{ color: 'hsl(var(--muted-foreground))' }}>
           {exp.highlights.map((h) => (
-            <li key={h}>— {h}</li>
+            <li key={h}>• {h}</li>
           ))}
         </ul>
       </div>

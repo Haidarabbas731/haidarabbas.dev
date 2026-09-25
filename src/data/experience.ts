@@ -11,7 +11,7 @@ export const experiences: Experience[] = [
     company: 'Popai Technologies',
     companyUrl: 'https://popai.agency',
     role: 'AI/ML Engineer',
-    period: 'Mar 2025 — Present',
+    period: 'Mar 2025 - Present',
     highlights: [
       'Designed and deployed 5+ autonomous AI agents using Python and n8n, automating workflow processes that saved an estimated 10 hours of manual work per week',
       'Built and optimized intelligent task-handling systems by fine-tuning LLMs, resulting in a 40% faster processing time for complex queries',
@@ -22,7 +22,7 @@ export const experiences: Experience[] = [
     company: 'MantiQ Infotech',
     companyUrl: 'https://mantiqinfotech.com/',
     role: 'AI Engineer',
-    period: 'Jan 2025 — Mar 2025',
+    period: 'Jan 2025 - Mar 2025',
     highlights: [
       'Fine-tuned LLMs for text generation, enhancing accuracy',
       'Developed AI-driven solutions for chatbots and automation',
@@ -33,7 +33,7 @@ export const experiences: Experience[] = [
     company: 'MantiQ Infotech',
     companyUrl: 'https://mantiqinfotech.com/',
     role: 'Node.js Developer & AI Researcher',
-    period: 'July 2023 — Dec 2024',
+    period: 'July 2023 - Dec 2024',
     highlights: [
       'Developed backend services using Node.js and Express, optimizing API performance and enhancing system scalability',
       'Integrated MongoDB for efficient and scalable data storage solutions',

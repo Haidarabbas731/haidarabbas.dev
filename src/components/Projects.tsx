@@ -81,7 +81,7 @@ const Projects = () => {
                     <CarouselItem key={shot.label} className="pl-0">
                       <img
                         src={shot.src}
-                        alt={`${project.title} — ${shot.label}`}
+                        alt={`${project.title}: ${shot.label}`}
                         className="w-full h-auto"
                         loading="lazy"
                         decoding="async"

@@ -126,7 +126,7 @@ export function AccessModeSelector({ onReady }: AccessModeSelectorProps) {
                   }}
                 >
                   <CheckCircle2 size={12} />
-                  Authenticated — using your API keys
+                  Authenticated: using your API keys
                 </div>
 
                 {/* Provider selector */}

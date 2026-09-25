@@ -218,7 +218,7 @@ export function PdfPreview({ pdfUrl, status, hasLatex }: PdfPreviewProps) {
         )}
       </div>
 
-      {/* Open in new tab — always visible when PDF is ready */}
+      {/* Open in new tab, always visible when PDF is ready */}
       {pdfUrl && (
         <a
           href={pdfUrl}

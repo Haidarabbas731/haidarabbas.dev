@@ -3,28 +3,28 @@ import type { Provider } from '@/types/resume'
 // ── Prompt builder ─────────────────────────────────────────────────────────
 
 function buildPrompt(baseLatex: string, jobDescription: string, additionalNotes: string): string {
-  return `You are a senior technical recruiter and ATS optimization expert with 15+ years tailoring resumes for top tech companies. Your task is to rewrite the provided LaTeX resume so it passes ATS screening and strongly resonates with the human reviewer — all without inventing anything.
+  return `You are a senior technical recruiter and ATS optimization expert with 15+ years tailoring resumes for top tech companies. Your task is to rewrite the provided LaTeX resume so it passes ATS screening and strongly resonates with the human reviewer, all without inventing anything.
 
 ════════════════════════════════════════
 OUTPUT RULES (non-negotiable)
 ════════════════════════════════════════
 1. Output ONLY the complete, compilable LaTeX source. Zero explanations, zero markdown fences, zero commentary before or after.
 2. Preserve every LaTeX command, custom macro, document class, and preamble definition exactly. The document must compile without errors.
-3. Do NOT invent experience, skills, metrics, technologies, or achievements. Every claim must already exist in the base resume — you may only reword, reorder, or reframe.
+3. Do NOT invent experience, skills, metrics, technologies, or achievements. Every claim must already exist in the base resume. You may only reword, reorder, or reframe.
 4. Do NOT alter: company names, job titles, dates, institutions, GPA, contact info, or URLs.
 
 ════════════════════════════════════════
 ATS OPTIMIZATION (apply to every bullet)
 ════════════════════════════════════════
-5. Extract the 10–15 highest-signal keywords and skill phrases from the job description (tools, languages, methodologies, domain terms). Weave them verbatim or near-verbatim into bullet points where the candidate genuinely has that experience.
+5. Extract the 10 to 15 highest-signal keywords and skill phrases from the job description (tools, languages, methodologies, domain terms). Weave them verbatim or near-verbatim into bullet points where the candidate genuinely has that experience.
 6. Use the exact job title terminology where applicable (e.g., if the JD says "Machine Learning Engineer", prefer that phrasing over "AI Developer" in the summary).
-7. Avoid keyword stuffing — integrate naturally so the bullet still reads fluently.
+7. Avoid keyword stuffing. Integrate naturally so the bullet still reads fluently.
 8. Prioritize hard skills, tools, and quantifiable outcomes over soft-skill language (ATS ignores "team player", "fast learner").
 
 ════════════════════════════════════════
 CONTENT REWRITING STRATEGY
 ════════════════════════════════════════
-9. Summary / Objective: Rewrite entirely to mirror the role's core requirements in 2–3 tight sentences. Lead with the most relevant title/function, then highlight 2 key differentiators that match the JD.
+9. Summary / Objective: Rewrite entirely to mirror the role's core requirements in 2 to 3 tight sentences. Lead with the most relevant title/function, then highlight 2 key differentiators that match the JD.
 10. Experience bullets: For each role, reorder bullets so the most JD-relevant achievement comes first. Strengthen weak bullets by adding specificity, action verbs, and measurable impact where the base resume is vague (but only using facts already present).
 11. Skills section: Reorder skill groups and individual skills so those most mentioned in the JD appear first. Do not add skills the candidate doesn't have.
 12. Projects: Surface the most relevant project(s) first. Tweak descriptions to emphasize the aspect most aligned with the JD (e.g., if JD is about backend scaling, lead with the scale/architecture detail, not the UI).
@@ -36,6 +36,7 @@ FORMATTING INTEGRITY
 14. Keep every \\section, \\subsection, \\cventry, \\item, \\begin/\\end block, and spacing command exactly as structured. Only change text content inside those commands.
 15. Do not add, remove, or rename sections.
 16. Escape all special LaTeX characters (&, %, $, #, _, {, }) that appear in new text.
+17. Never use em dashes (the — character or LaTeX ---) anywhere in the output. Write with commas, colons, periods, or parentheses instead, so the text reads like a person wrote it. If the base resume already contains an em dash (for example in a job title), replace it with a comma or parentheses. This is the one allowed change to titles. Leave existing date ranges exactly as written.
 
 ════════════════════════════════════════
 BASE RESUME (LaTeX source)
@@ -53,11 +54,26 @@ Now output the complete tailored LaTeX document:`
 
 // ── Clean AI output ────────────────────────────────────────────────────────
 
+/**
+ * Em dashes (the character or LaTeX ---) make text read as AI-written, so swap them for commas.
+ * Runs on model output as a safety net in case the prompt rule is ignored.
+ */
+export function stripEmDashes(latex: string): string {
+  return latex
+    .replace(/\{[ \t]*(?:—|---(?!-))[ \t]*\}/g, '{-}')
+    .replace(/\\item[ \t]*(?:—|---(?!-))[ \t]*/g, '\\item ')
+    .replace(/^([ \t]*)(?:—|---(?!-))[ \t]*/gm, '$1')
+    .replace(/[ \t]*—[ \t]*/g, ', ')
+    .replace(/([^-])[ \t]*---(?!-)[ \t]*/g, '$1, ')
+}
+
 function cleanLatex(raw: string): string {
-  return raw
-    .replace(/^```(?:latex|tex)?\n?/i, '')
-    .replace(/\n?```$/i, '')
-    .trim()
+  return stripEmDashes(
+    raw
+      .replace(/^```(?:latex|tex)?\n?/i, '')
+      .replace(/\n?```$/i, '')
+      .trim()
+  )
 }
 
 // ── Gemini ─────────────────────────────────────────────────────────────────

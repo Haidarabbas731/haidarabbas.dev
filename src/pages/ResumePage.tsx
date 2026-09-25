@@ -93,8 +93,8 @@ export default function ResumePage() {
             className="text-base max-w-xl mx-auto font-body"
             style={{ color: 'hsl(var(--muted-foreground))' }}
           >
-            Paste a job description. AI rewrites your resume to match — same experience, perfectly
-            positioned.
+            Paste a job description. AI rewrites your resume to match the role. Same experience,
+            perfectly positioned.
           </p>
         </div>
 
@@ -157,7 +157,7 @@ export default function ResumePage() {
 
             {/* Two-panel layout */}
             <div className="grid lg:grid-cols-5 gap-6">
-              {/* Left panel — inputs (40%) */}
+              {/* Left panel: inputs (40%) */}
               <div className="lg:col-span-2">
                 <div
                   className="rounded-xl border p-6 space-y-6 sticky top-24"
@@ -187,7 +187,7 @@ export default function ResumePage() {
                 </div>
               </div>
 
-              {/* Right panel — PDF preview (60%) */}
+              {/* Right panel: PDF preview (60%) */}
               <div className="lg:col-span-3">
                 <div
                   className="rounded-xl border p-4"
