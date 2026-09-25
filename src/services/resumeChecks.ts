@@ -46,7 +46,7 @@ export function checkAgainstSource(data: ResumeData, source: string): ResumeWarn
   // an item whose every word appears somewhere in the original.
   const skillInSource = (item: string) => {
     if (inSource(item)) return true
-    const words = item.toLowerCase().match(/[\p{L}\p{N}+#.]+/gu) ?? []
+    const words: string[] = item.toLowerCase().match(/[\p{L}\p{N}+#.]+/gu) ?? []
     return words.length > 0 && words.every((w) => w.length < 3 || sourceWords.has(w))
   }
 
