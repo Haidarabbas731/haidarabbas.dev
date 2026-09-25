@@ -23,7 +23,7 @@ const Footer = () => (
         ))}
       </div>
 
-      <span className="text-xs" style={{ color: 'hsl(var(--muted-foreground) / 0.6)' }}>
+      <span className="text-xs" style={{ color: 'hsl(var(--muted-foreground))' }}>
         Built with ☕ + curiosity
       </span>
     </div>

@@ -78,7 +78,7 @@ export function JobDescriptionInput({
         <div className="flex-1 h-px" style={{ background: 'hsl(var(--border) / 0.4)' }} />
         <span
           className="text-[10px] uppercase tracking-widest px-2 font-mono-jb"
-          style={{ color: 'hsl(var(--muted-foreground) / 0.6)' }}
+          style={{ color: 'hsl(var(--muted-foreground))' }}
         >
           Optional
         </span>
