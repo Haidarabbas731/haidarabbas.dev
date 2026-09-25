@@ -206,6 +206,7 @@ export default function ResumePage() {
                     onTailor={tailor}
                     onReset={reset}
                     onDownload={download}
+                    onReconfigure={handleReconfigure}
                   />
                   <ResumeWarnings warnings={warnings} />
                 </div>

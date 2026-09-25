@@ -21,12 +21,6 @@ function getActiveStep(hasSource: boolean, _pdfUrl: string | null, status: Tailo
   return 'configure'
 }
 
-function getLoadingPhaseLabel(status: TailorStatus) {
-  if (status === 'tailoring') return 'Analyzing & Rewriting...'
-  if (status === 'compiling') return 'Compiling PDF...'
-  return 'Processing...'
-}
-
 export function PdfPreview({ pdfUrl, status, hasSource, showing }: PdfPreviewProps) {
   const isLoading = status === 'compiling' || status === 'tailoring'
   const activeStep = getActiveStep(hasSource, pdfUrl, status)
@@ -142,12 +136,6 @@ export function PdfPreview({ pdfUrl, status, hasSource, showing }: PdfPreviewPro
                 ))}
               </div>
             ))}
-            {/* Phase label */}
-            <div className="absolute bottom-6 left-0 right-0 flex justify-center">
-              <p className="text-xs font-mono-jb" style={{ color: 'hsl(var(--primary))' }}>
-                {getLoadingPhaseLabel(status)}
-              </p>
-            </div>
           </div>
         )}
 
