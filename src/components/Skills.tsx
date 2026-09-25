@@ -1,62 +1,88 @@
-import { useState } from 'react'
-import { skillGroups } from '@/data/skills'
+import { education } from '@/data/education'
+import { skills } from '@/data/skills'
 import SectionTitle from './SectionTitle'
 
-const Skills = () => {
-  const [hoveredSkill, setHoveredSkill] = useState<string | null>(null)
+const Skills = () => (
+  <section className="py-16 md:py-20 px-6 max-w-6xl mx-auto">
+    <SectionTitle number="02" title="Background" id="skills" />
 
-  return (
-    <section className="py-16 md:py-20 px-6 max-w-6xl mx-auto">
-      <SectionTitle number="02" title="Weapons of Choice" id="skills" />
-
-      <div className="grid md:grid-cols-2 gap-10">
-        {skillGroups.map((group) => (
-          <div key={group.category}>
-            <h3
-              className="text-sm uppercase tracking-widest mb-4"
-              style={{ color: 'hsl(var(--primary))', fontFamily: 'var(--font-mono)' }}
+    <div className="grid md:grid-cols-2 gap-12 md:gap-16">
+      {/* Education */}
+      <div>
+        <h3
+          className="text-sm uppercase tracking-widest mb-5"
+          style={{ color: 'hsl(var(--primary))', fontFamily: 'var(--font-mono)' }}
+        >
+          Education
+        </h3>
+        <div className="space-y-4">
+          {education.map((edu) => (
+            <div
+              key={edu.degree}
+              className="rounded-lg border p-5"
+              style={{ borderColor: 'hsl(var(--border))', background: 'hsl(var(--card))' }}
             >
-              {group.category}
-            </h3>
-            <div className="flex flex-wrap gap-2">
-              {group.skills.map((skill) => (
-                <div
-                  key={skill.name}
-                  className="relative"
-                  onMouseEnter={() => setHoveredSkill(skill.name)}
-                  onMouseLeave={() => setHoveredSkill(null)}
-                >
-                  <span
-                    className="inline-block px-3 py-1.5 text-sm rounded-md border cursor-default transition-all hover:border-primary/50 hover:shadow-[0_0_8px_hsl(var(--primary)/0.15)]"
-                    style={{
-                      borderColor: 'hsl(var(--border))',
-                      background: 'hsl(var(--card))',
-                      fontFamily: 'var(--font-mono)',
-                      color: 'hsl(var(--foreground) / 0.8)',
-                    }}
-                  >
-                    {skill.name}
-                  </span>
-                  {hoveredSkill === skill.name && (
-                    <div
-                      className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 text-xs rounded whitespace-nowrap z-50"
-                      style={{
-                        background: 'hsl(var(--popover))',
-                        border: '1px solid hsl(var(--border))',
-                        color: 'hsl(var(--muted-foreground))',
-                      }}
-                    >
-                      {skill.description}
-                    </div>
-                  )}
-                </div>
-              ))}
+              <h4 className="text-base font-bold" style={{ fontFamily: 'var(--font-display)' }}>
+                {edu.degree}
+              </h4>
+              <div className="text-sm mt-1" style={{ color: 'hsl(var(--muted-foreground))' }}>
+                {edu.institution}
+              </div>
+              <div
+                className="text-xs mt-2"
+                style={{ color: 'hsl(var(--primary))', fontFamily: 'var(--font-mono)' }}
+              >
+                {edu.period}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </section>
-  )
-}
+
+      {/* Stack */}
+      <div>
+        <h3
+          className="text-sm uppercase tracking-widest mb-5"
+          style={{ color: 'hsl(var(--primary))', fontFamily: 'var(--font-mono)' }}
+        >
+          Stack
+        </h3>
+        <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+          {skills.map((skill) => (
+            <a
+              key={skill.name}
+              href={skill.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={skill.name}
+              className="group flex flex-col items-center justify-center gap-2 rounded-lg border p-4 transition-all hover:-translate-y-0.5 border-[hsl(var(--border))] hover:border-[var(--skill-color)] hover:shadow-[0_0_12px_var(--skill-glow)]"
+              style={
+                {
+                  background: 'hsl(var(--card))',
+                  '--skill-color': skill.color,
+                  '--skill-glow': `${skill.color}33`,
+                } as React.CSSProperties
+              }
+            >
+              <svg
+                viewBox="0 0 24 24"
+                className="w-6 h-6 transition-colors fill-[hsl(var(--muted-foreground))] group-hover:fill-[var(--skill-color)]"
+              >
+                <title>{skill.name}</title>
+                <path d={skill.path} />
+              </svg>
+              <span
+                className="text-xs text-center"
+                style={{ color: 'hsl(var(--muted-foreground))', fontFamily: 'var(--font-mono)' }}
+              >
+                {skill.name}
+              </span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+)
 
 export default Skills
