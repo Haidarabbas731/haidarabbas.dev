@@ -88,6 +88,7 @@ const Navbar = () => {
 
         {/* Mobile toggle */}
         <button
+          type="button"
           onClick={() => setOpen(!open)}
           className="md:hidden flex flex-col gap-1.5"
           aria-label="Toggle menu"

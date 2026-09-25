@@ -58,8 +58,8 @@ const TimelineEntry = ({ exp, index }: { exp: (typeof experiences)[0]; index: nu
             className={`space-y-2 text-sm ${isLeft ? 'text-right' : 'text-left'}`}
             style={{ color: 'hsl(var(--muted-foreground))' }}
           >
-            {exp.highlights.map((h, i) => (
-              <li key={i}>{h}</li>
+            {exp.highlights.map((h) => (
+              <li key={h}>{h}</li>
             ))}
           </ul>
         </div>
@@ -102,8 +102,8 @@ const TimelineEntry = ({ exp, index }: { exp: (typeof experiences)[0]; index: nu
           · {exp.period}
         </div>
         <ul className="space-y-1 text-sm" style={{ color: 'hsl(var(--muted-foreground))' }}>
-          {exp.highlights.map((h, i) => (
-            <li key={i}>— {h}</li>
+          {exp.highlights.map((h) => (
+            <li key={h}>— {h}</li>
           ))}
         </ul>
       </div>
@@ -120,7 +120,7 @@ const Experience = () => (
         style={{ background: 'hsl(var(--border))' }}
       />
       {experiences.map((exp, i) => (
-        <TimelineEntry key={i} exp={exp} index={i} />
+        <TimelineEntry key={`${exp.company}-${exp.period}`} exp={exp} index={i} />
       ))}
     </div>
   </section>
