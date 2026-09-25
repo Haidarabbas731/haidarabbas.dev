@@ -1,4 +1,5 @@
 import type { ModelInfo, Provider } from '@/types/resume'
+import { checkApiKey } from './apiKey'
 
 // Static fallback for Gemini, shown before API key is entered
 export const DEFAULT_GEMINI_MODELS: ModelInfo[] = [
@@ -20,11 +21,13 @@ export async function fetchModels(provider: Provider, apiKey?: string): Promise<
 }
 
 async function fetchGeminiModels(apiKey?: string): Promise<ModelInfo[]> {
-  if (!apiKey) return DEFAULT_GEMINI_MODELS
+  // Partial or invalid keys (for example while typing) just get the default list
+  const check = apiKey ? checkApiKey('gemini', apiKey) : null
+  if (!check?.ok) return DEFAULT_GEMINI_MODELS
 
   try {
     const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models', {
-      headers: { 'x-goog-api-key': apiKey },
+      headers: { 'x-goog-api-key': check.key },
     })
     if (!response.ok) return DEFAULT_GEMINI_MODELS
 

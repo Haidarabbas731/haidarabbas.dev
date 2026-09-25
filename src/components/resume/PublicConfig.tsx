@@ -1,5 +1,6 @@
 import { Key } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { checkApiKey } from '@/services/apiKey'
 import { getLastModel, saveLastModel, savePublicConfig } from '@/services/authService'
 import { fetchModels, getDefaultModel } from '@/services/modelService'
 import type { ModelInfo, Provider, ResumeSource } from '@/types/resume'
@@ -49,12 +50,16 @@ export function PublicConfig({ onReady, onClear }: PublicConfigProps) {
   }
 
   const hasKey = !!apiKey.trim()
+  const keyCheck = hasKey ? checkApiKey(provider, apiKey) : null
+  const keyValid = keyCheck?.ok === true
   const hasResume = draftHasContent(draft)
-  const canApply = hasKey && hasResume && !!model
+  const canApply = keyValid && hasResume && !!model
 
   function handleApply() {
     if (!canApply) return
-    savePublicConfig(provider, apiKey.trim())
+    // Only a validated, cleaned key is saved or used
+    const cleanKey = keyCheck?.ok ? keyCheck.key : apiKey.trim()
+    savePublicConfig(provider, cleanKey)
     // The page takes ownership of the uploaded PDF's object URL and revokes it when done
     const source: ResumeSource =
       draft.kind === 'latex'
@@ -64,16 +69,18 @@ export function PublicConfig({ onReady, onClear }: PublicConfigProps) {
             text: draft.text.trim(),
             originalPdfUrl: draft.file ? URL.createObjectURL(draft.file) : undefined,
           }
-    onReady(apiKey.trim(), provider, model, source)
+    onReady(cleanKey, provider, model, source)
   }
 
   const modelName = models.find((m) => m.id === model)?.name ?? model
   const keyLink = KEY_LINKS[provider]
   const missing = !hasKey
     ? 'Add your API key to continue'
-    : !hasResume
-      ? 'Add your resume to continue'
-      : null
+    : !keyValid
+      ? 'Fix your API key to continue'
+      : !hasResume
+        ? 'Add your resume to continue'
+        : null
 
   return (
     <div className="space-y-6">
@@ -96,7 +103,12 @@ export function PublicConfig({ onReady, onClear }: PublicConfigProps) {
             className="flex items-center gap-3 px-3 py-2.5 rounded-md border transition"
             style={{
               background: 'hsl(var(--card) / 0.4)',
-              borderColor: apiKey ? 'hsl(var(--primary) / 0.3)' : 'hsl(var(--border) / 0.5)',
+              borderColor:
+                keyCheck?.ok === false
+                  ? 'hsl(var(--destructive) / 0.6)'
+                  : apiKey
+                    ? 'hsl(var(--primary) / 0.3)'
+                    : 'hsl(var(--border) / 0.5)',
               boxShadow: apiKey ? '0 0 12px hsl(var(--primary) / 0.1)' : 'none',
             }}
           >
@@ -110,8 +122,25 @@ export function PublicConfig({ onReady, onClear }: PublicConfigProps) {
               className="flex-1 bg-transparent text-base md:text-sm outline-none placeholder:text-muted-foreground font-mono-jb"
               style={{ color: 'hsl(var(--foreground))' }}
               autoComplete="off"
+              aria-invalid={keyCheck?.ok === false}
+              aria-describedby={keyCheck?.ok === false ? 'api-key-problem' : undefined}
             />
           </div>
+          {keyCheck && keyCheck.ok === false && (
+            <p
+              id="api-key-problem"
+              role="alert"
+              className="text-xs font-mono-jb leading-relaxed"
+              style={{ color: 'hsl(var(--destructive))' }}
+            >
+              {keyCheck.message}
+            </p>
+          )}
+          {keyCheck?.ok && keyCheck.hint && (
+            <p className="text-xs font-mono-jb" style={{ color: 'hsl(var(--muted-foreground))' }}>
+              {keyCheck.hint}
+            </p>
+          )}
           <p className="text-xs font-mono-jb" style={{ color: 'hsl(var(--muted-foreground))' }}>
             {provider === 'gemini' ? 'Get a free key at ' : 'Get a key at '}
             <a

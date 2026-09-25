@@ -3,6 +3,8 @@ import { SAMPLE_DATA, SAMPLE_SOURCE } from '@/test/fixtures/sampleResume'
 import { tailorResume } from './resumeService'
 import { buildStructuredPrompt, STRUCTURED_RULES, tailorStructured } from './structuredTailor'
 
+const KEY = 'test-key-abcdef123456'
+
 const geminiReply = (text: string, finishReason = 'STOP') =>
   new Response(JSON.stringify({ candidates: [{ finishReason, content: { parts: [{ text }] } }] }), {
     status: 200,
@@ -43,26 +45,20 @@ describe('buildStructuredPrompt', () => {
 describe('tailorStructured', () => {
   it('returns parsed data and warnings, asking Gemini for JSON with the key in a header', async () => {
     const fetchMock = mockFetch(geminiReply(JSON.stringify(SAMPLE_DATA)))
-    const result = await tailorStructured(
-      'gemini',
-      'k-123',
-      'gemini-2.5-flash',
-      SAMPLE_SOURCE,
-      'jd'
-    )
+    const result = await tailorStructured('gemini', KEY, 'gemini-2.5-flash', SAMPLE_SOURCE, 'jd')
 
     expect(result.data.name).toBe('Priya Nair')
     expect(result.warnings).toEqual([])
 
     const [url, init] = fetchMock.mock.calls[0]
-    expect(String(url)).not.toContain('k-123')
-    expect(init.headers['x-goog-api-key']).toBe('k-123')
+    expect(String(url)).not.toContain(KEY)
+    expect(init.headers['x-goog-api-key']).toBe(KEY)
     expect(JSON.parse(init.body).generationConfig.responseMimeType).toBe('application/json')
   })
 
   it('asks OpenRouter for a JSON object', async () => {
     const fetchMock = mockFetch(openRouterReply(JSON.stringify(SAMPLE_DATA)))
-    await tailorStructured('openrouter', 'k', 'some/model', SAMPLE_SOURCE, 'jd')
+    await tailorStructured('openrouter', KEY, 'some/model', SAMPLE_SOURCE, 'jd')
     expect(JSON.parse(fetchMock.mock.calls[0][1].body).response_format).toEqual({
       type: 'json_object',
     })
@@ -72,7 +68,7 @@ describe('tailorStructured', () => {
     const tampered = structuredClone(SAMPLE_DATA)
     tampered.experience[0].bullets.push('Saved $73 million.')
     mockFetch(geminiReply(JSON.stringify(tampered)))
-    const { warnings } = await tailorStructured('gemini', 'k', 'm', SAMPLE_SOURCE, 'jd')
+    const { warnings } = await tailorStructured('gemini', KEY, 'm', SAMPLE_SOURCE, 'jd')
     expect(warnings.map((w) => w.value)).toContain('73')
   })
 
@@ -81,7 +77,7 @@ describe('tailorStructured', () => {
       geminiReply('sorry, here it is: {"name":'),
       geminiReply(JSON.stringify(SAMPLE_DATA))
     )
-    const { data } = await tailorStructured('gemini', 'k', 'm', SAMPLE_SOURCE, 'jd')
+    const { data } = await tailorStructured('gemini', KEY, 'm', SAMPLE_SOURCE, 'jd')
     expect(data.name).toBe('Priya Nair')
     expect(fetchMock).toHaveBeenCalledTimes(2)
     expect(JSON.parse(fetchMock.mock.calls[1][1].body).contents[0].parts[0].text).toContain(
@@ -91,14 +87,14 @@ describe('tailorStructured', () => {
 
   it('gives up after a second malformed reply', async () => {
     mockFetch(geminiReply('nope'), geminiReply('still nope'))
-    await expect(tailorStructured('gemini', 'k', 'm', SAMPLE_SOURCE, 'jd')).rejects.toThrow(
+    await expect(tailorStructured('gemini', KEY, 'm', SAMPLE_SOURCE, 'jd')).rejects.toThrow(
       /not a resume/
     )
   })
 
   it('reports a truncated reply without retrying', async () => {
     const fetchMock = mockFetch(geminiReply('{"name":"Sam"', 'MAX_TOKENS'))
-    await expect(tailorStructured('gemini', 'k', 'm', SAMPLE_SOURCE, 'jd')).rejects.toThrow(
+    await expect(tailorStructured('gemini', KEY, 'm', SAMPLE_SOURCE, 'jd')).rejects.toThrow(
       /ran out of space/
     )
     expect(fetchMock).toHaveBeenCalledTimes(1)
@@ -106,7 +102,7 @@ describe('tailorStructured', () => {
 
   it('reports a truncated OpenRouter reply', async () => {
     mockFetch(openRouterReply('{"name":"Sam"', 'length'))
-    await expect(tailorStructured('openrouter', 'k', 'm', SAMPLE_SOURCE, 'jd')).rejects.toThrow(
+    await expect(tailorStructured('openrouter', KEY, 'm', SAMPLE_SOURCE, 'jd')).rejects.toThrow(
       /ran out of space/
     )
   })
@@ -115,7 +111,17 @@ describe('tailorStructured', () => {
 describe('tailorResume (LaTeX path)', () => {
   it('still strips fences and em dashes from the reply', async () => {
     mockFetch(geminiReply('```latex\n\\documentclass{article}\nBuilt it — fast\n```'))
-    const out = await tailorResume('gemini', 'k', 'm', '\\documentclass{article}', 'jd')
+    const out = await tailorResume('gemini', KEY, 'm', '\\documentclass{article}', 'jd')
     expect(out).toBe('\\documentclass{article}\nBuilt it, fast')
+  })
+})
+
+describe('bad API keys', () => {
+  it('fails with a clear message and never calls the network', async () => {
+    const fetchMock = mockFetch()
+    await expect(
+      tailorStructured('openrouter', 'Job description• with bullets', 'm', SAMPLE_SOURCE, 'jd')
+    ).rejects.toThrow(/single word/)
+    expect(fetchMock).not.toHaveBeenCalled()
   })
 })

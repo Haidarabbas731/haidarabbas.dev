@@ -1,4 +1,5 @@
 import type { Provider } from '@/types/resume'
+import { checkApiKey } from './apiKey'
 
 // ── Prompt builder ─────────────────────────────────────────────────────────
 
@@ -189,9 +190,12 @@ export function callModel(
   prompt: string,
   options: CallOptions = {}
 ): Promise<string> {
+  // Fail with a clear message instead of the browser's "non ISO-8859-1 code point" header error
+  const check = checkApiKey(provider, apiKey)
+  if (check.ok === false) return Promise.reject(new Error(check.message))
   return provider === 'gemini'
-    ? callGemini(apiKey, model, prompt, options)
-    : callOpenRouter(apiKey, model, prompt, options)
+    ? callGemini(check.key, model, prompt, options)
+    : callOpenRouter(check.key, model, prompt, options)
 }
 
 // ── Public API ─────────────────────────────────────────────────────────────
