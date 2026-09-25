@@ -71,14 +71,16 @@ export async function extractPdfText(file: File | ArrayBuffer): Promise<PdfTextR
     throw new PdfReadError('That PDF is larger than 10 MB. Try a smaller file or paste your text.')
   }
 
-  const pdfjs = await import('pdfjs-dist')
+  // The legacy build works in older browsers too. The modern build needs very recent JavaScript
+  // features (such as Uint8Array.toHex) and would fail to read any PDF on older Chrome and Safari.
+  const pdfjs = await import('pdfjs-dist/legacy/build/pdf.mjs')
   // In a browser, pdf.js needs its worker file. In tests (no Worker) it runs without one.
   if (typeof Worker !== 'undefined' && !pdfjs.GlobalWorkerOptions.workerSrc) {
-    const { default: workerUrl } = await import('pdfjs-dist/build/pdf.worker.min.mjs?url')
+    const { default: workerUrl } = await import('pdfjs-dist/legacy/build/pdf.worker.min.mjs?url')
     pdfjs.GlobalWorkerOptions.workerSrc = workerUrl
   }
 
-  const task = pdfjs.getDocument({ data: new Uint8Array(buffer) })
+  const task = pdfjs.getDocument({ data: new Uint8Array(buffer), verbosity: 0 })
   const pageTexts: string[] = []
   const links = new Set<string>()
   let totalPages = 0
