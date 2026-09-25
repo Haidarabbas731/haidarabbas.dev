@@ -2,6 +2,7 @@ import { FileText, Loader2, Upload, X } from 'lucide-react'
 import { useId, useRef, useState } from 'react'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
+import { RESUME_TEMPLATE } from '@/data/resumeTemplate'
 import { extractPdfText } from '@/services/pdfText'
 import { LatexInput } from './LatexInput'
 
@@ -202,6 +203,16 @@ export function ResumeSourceInput({ value, onChange, disabled }: ResumeSourceInp
             color: 'hsl(var(--foreground) / 0.85)',
           }}
         />
+        {!value.text.trim() && !value.file && (
+          <button
+            type="button"
+            onClick={() => onChange({ kind: 'text', text: RESUME_TEMPLATE })}
+            className={linkButton}
+            style={{ color: 'hsl(var(--muted-foreground))' }}
+          >
+            No resume yet? Start from a template
+          </button>
+        )}
       </div>
     </div>
   )

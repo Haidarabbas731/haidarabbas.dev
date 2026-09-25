@@ -1,5 +1,5 @@
 import { Sparkles } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import CustomCursor from '@/components/CustomCursor'
 import GrainOverlay from '@/components/GrainOverlay'
 import Navbar from '@/components/Navbar'
@@ -48,6 +48,14 @@ export default function ResumePage() {
     download,
   } = useResumeTailor(config)
 
+  // On phones the result sits below the inputs, so bring it into view when it is ready
+  const previewRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (status !== 'done' || !window.matchMedia('(max-width: 1023px)').matches) return
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    previewRef.current?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' })
+  }, [status])
+
   // Tabs only appear once there is a tailored version and something to compare it with
   const showTabs = !!tailoredUrl && (!!originalUrl || !!changes)
 
@@ -88,23 +96,15 @@ export default function ResumePage() {
         {/* Page header */}
         <div className="mb-12 text-center">
           <div
-            className="inline-flex items-center gap-2 mb-4 text-xs px-3 py-1.5 rounded-full border overflow-hidden relative font-mono-jb"
+            className="inline-flex items-center gap-2 mb-4 text-xs px-3 py-1.5 rounded-full border font-mono-jb"
             style={{
               color: 'hsl(var(--primary))',
               borderColor: 'hsl(var(--primary) / 0.25)',
               background: 'hsl(var(--primary) / 0.06)',
             }}
           >
-            <div
-              className="absolute inset-0 animate-shimmer pointer-events-none"
-              style={{
-                background:
-                  'linear-gradient(90deg, transparent 0%, hsl(var(--primary) / 0.12) 50%, transparent 100%)',
-                backgroundSize: '200% 100%',
-              }}
-            />
-            <Sparkles size={11} className="relative z-10" />
-            <span className="relative z-10">AI-Powered · Gemini & OpenRouter</span>
+            <Sparkles size={11} />
+            <span>AI-Powered · Gemini & OpenRouter</span>
           </div>
           <h1
             className="text-4xl md:text-6xl font-bold mb-4 leading-tight bg-gradient-to-r from-foreground via-primary/80 to-foreground bg-clip-text text-transparent font-display"
@@ -135,13 +135,12 @@ export default function ResumePage() {
               style={{
                 background: 'hsl(var(--card) / 0.5)',
                 borderColor: 'hsl(var(--primary) / 0.2)',
-                backdropFilter: 'blur(12px)',
                 boxShadow: '0 2px 16px hsl(var(--primary) / 0.06)',
               }}
             >
               <div className="flex items-center gap-3 text-xs">
                 <span
-                  className="w-2 h-2 rounded-full animate-pulse shrink-0"
+                  className="w-2 h-2 rounded-full shrink-0"
                   style={{ background: 'hsl(var(--primary))' }}
                 />
                 <span className="font-mono-jb" style={{ color: 'hsl(var(--muted-foreground))' }}>
@@ -187,7 +186,6 @@ export default function ResumePage() {
                   style={{
                     background: 'hsl(var(--card) / 0.5)',
                     borderColor: 'hsl(var(--primary) / 0.12)',
-                    backdropFilter: 'blur(16px)',
                     boxShadow: 'var(--shadow-card)',
                   }}
                 >
@@ -213,13 +211,12 @@ export default function ResumePage() {
               </div>
 
               {/* Right panel: PDF preview (60%) */}
-              <div className="lg:col-span-3">
+              <div ref={previewRef} className="lg:col-span-3 scroll-mt-24">
                 <div
                   className="rounded-xl border p-4"
                   style={{
                     background: 'hsl(var(--card) / 0.3)',
                     borderColor: 'hsl(var(--primary) / 0.1)',
-                    backdropFilter: 'blur(12px)',
                     boxShadow: 'var(--shadow-card)',
                   }}
                 >

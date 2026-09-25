@@ -152,7 +152,7 @@ export function PdfPreview({ pdfUrl, status, hasSource, showing }: PdfPreviewPro
             />
             <div className="relative z-10 flex flex-col items-center gap-4">
               <div
-                className="w-16 h-16 rounded-xl border-2 border-dashed flex items-center justify-center animate-float"
+                className="w-16 h-16 rounded-xl border-2 border-dashed flex items-center justify-center"
                 style={{
                   borderColor: 'hsl(var(--primary) / 0.3)',
                   background: 'hsl(var(--primary) / 0.05)',
@@ -223,9 +223,10 @@ export function PdfPreview({ pdfUrl, status, hasSource, showing }: PdfPreviewPro
         {/* PDF iframe */}
         {pdfUrl && (
           <iframe
+            key={pdfUrl}
             src={pdfUrl}
             title="Resume PDF Preview"
-            className="w-full h-full border-0"
+            className="w-full h-full border-0 pdf-reveal"
             style={{ minHeight: '500px' }}
           />
         )}

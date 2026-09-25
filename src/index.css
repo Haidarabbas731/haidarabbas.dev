@@ -384,3 +384,23 @@ html.theme-fading *::after {
     transform: none;
   }
 }
+
+/* A new PDF eases in instead of popping. Reduced motion keeps only the fade. */
+@keyframes pdf-reveal {
+  from {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+}
+
+.pdf-reveal {
+  animation: pdf-reveal 220ms cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @keyframes pdf-reveal {
+    from {
+      opacity: 0;
+    }
+  }
+}
