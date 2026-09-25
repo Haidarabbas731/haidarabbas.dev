@@ -59,7 +59,7 @@ const Skills = () => (
               style={
                 {
                   background: 'hsl(var(--card))',
-                  '--skill-color': skill.color,
+                  '--skill-color': `color-mix(in srgb, ${skill.color} var(--skill-mix), hsl(var(--foreground)))`,
                   '--skill-glow': `${skill.color}33`,
                 } as React.CSSProperties
               }

@@ -74,6 +74,9 @@
     --grain-opacity: 0.035;
     --grain-blend: multiply;
 
+    /* How much of a skill's brand colour survives on hover (rest is mixed with ink) */
+    --skill-mix: 60%;
+
     /* Hero particle network (read from JS) */
     --particle: 175 85% 30%;
     --particle-dot-alpha: 0.35;
@@ -132,6 +135,8 @@
     --overlay-alpha: 0.8;
     --grain-opacity: 0.04;
     --grain-blend: normal;
+
+    --skill-mix: 100%;
 
     --particle: 175 80% 60%;
     --particle-dot-alpha: 0.4;
@@ -276,27 +281,27 @@
   mix-blend-mode: normal;
 }
 
-html[data-theme-transition="fade"] ::view-transition-old(root),
-html[data-theme-transition="fade"] ::view-transition-new(root),
-html[data-theme-transition="fade-fast"] ::view-transition-old(root),
-html[data-theme-transition="fade-fast"] ::view-transition-new(root) {
+html[data-theme-transition="fade"]::view-transition-old(root),
+html[data-theme-transition="fade"]::view-transition-new(root),
+html[data-theme-transition="fade-fast"]::view-transition-old(root),
+html[data-theme-transition="fade-fast"]::view-transition-new(root) {
   animation-duration: 200ms;
   animation-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
   animation-fill-mode: both;
 }
 
-html[data-theme-transition="fade"] ::view-transition-old(root),
-html[data-theme-transition="fade-fast"] ::view-transition-old(root) {
+html[data-theme-transition="fade"]::view-transition-old(root),
+html[data-theme-transition="fade-fast"]::view-transition-old(root) {
   animation-name: theme-fade-out;
 }
 
-html[data-theme-transition="fade"] ::view-transition-new(root),
-html[data-theme-transition="fade-fast"] ::view-transition-new(root) {
+html[data-theme-transition="fade"]::view-transition-new(root),
+html[data-theme-transition="fade-fast"]::view-transition-new(root) {
   animation-name: theme-fade-in;
 }
 
-html[data-theme-transition="fade-fast"] ::view-transition-old(root),
-html[data-theme-transition="fade-fast"] ::view-transition-new(root) {
+html[data-theme-transition="fade-fast"]::view-transition-old(root),
+html[data-theme-transition="fade-fast"]::view-transition-new(root) {
   animation-duration: 150ms;
 }
 
