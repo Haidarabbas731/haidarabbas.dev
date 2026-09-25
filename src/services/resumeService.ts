@@ -81,13 +81,31 @@ function cleanLatex(raw: string): string {
 export interface CallOptions {
   /** Ask the provider for a JSON reply. */
   json?: boolean
+  /** Lets the caller stop the request, for example when the user switches model. */
+  signal?: AbortSignal
+}
+
+const REQUEST_TIMEOUT_MS = 60_000
+
+/** The request stops when the caller aborts or after the timeout, whichever comes first. */
+function requestSignal(external?: AbortSignal): AbortSignal {
+  const timeout = AbortSignal.timeout(REQUEST_TIMEOUT_MS)
+  if (!external) return timeout
+  if (typeof AbortSignal.any === 'function') return AbortSignal.any([external, timeout])
+  const controller = new AbortController()
+  const stop = () => controller.abort()
+  for (const s of [external, timeout]) {
+    if (s.aborted) stop()
+    else s.addEventListener('abort', stop, { once: true })
+  }
+  return controller.signal
 }
 
 async function callGemini(
   apiKey: string,
   model: string,
   prompt: string,
-  { json }: CallOptions
+  { json, signal }: CallOptions
 ): Promise<string> {
   const response = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
@@ -102,7 +120,7 @@ async function callGemini(
           ...(json ? { responseMimeType: 'application/json' } : {}),
         },
       }),
-      signal: AbortSignal.timeout(60_000),
+      signal: requestSignal(signal),
     }
   )
 
@@ -136,7 +154,7 @@ async function callOpenRouter(
   apiKey: string,
   model: string,
   prompt: string,
-  { json }: CallOptions
+  { json, signal }: CallOptions
 ): Promise<string> {
   const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
     method: 'POST',
@@ -153,7 +171,7 @@ async function callOpenRouter(
       max_tokens: 8192,
       ...(json ? { response_format: { type: 'json_object' } } : {}),
     }),
-    signal: AbortSignal.timeout(60_000),
+    signal: requestSignal(signal),
   })
 
   if (!response.ok) {
@@ -210,10 +228,11 @@ export async function tailorResume(
   model: string,
   baseLatex: string,
   jobDescription: string,
-  additionalNotes = ''
+  additionalNotes = '',
+  signal?: AbortSignal
 ): Promise<string> {
   const prompt = buildPrompt(baseLatex, jobDescription, additionalNotes)
-  return cleanLatex(await callModel(provider, apiKey, model, prompt))
+  return cleanLatex(await callModel(provider, apiKey, model, prompt, { signal }))
 }
 
 /**

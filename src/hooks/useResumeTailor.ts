@@ -46,6 +46,8 @@ export function useResumeTailor(config: ResumeConfig) {
   const ownedTailored = useRef<string | null>(null)
   // Bumped whenever a result should be discarded (new run, reset, new source)
   const runId = useRef(0)
+  // Aborts the in-flight AI request when the user stops, resets, or leaves
+  const abortRef = useRef<AbortController | null>(null)
 
   const setOriginal = useCallback((url: string | null, owned: boolean) => {
     if (ownedOriginal.current && ownedOriginal.current !== url) {
@@ -67,6 +69,7 @@ export function useResumeTailor(config: ResumeConfig) {
     () => () => {
       if (ownedOriginal.current) URL.revokeObjectURL(ownedOriginal.current)
       if (ownedTailored.current) URL.revokeObjectURL(ownedTailored.current)
+      abortRef.current?.abort()
     },
     []
   )
@@ -119,6 +122,9 @@ export function useResumeTailor(config: ResumeConfig) {
     if (!source || !jobDescription.trim() || !apiKey || !model) return
 
     const run = ++runId.current
+    abortRef.current?.abort()
+    const controller = new AbortController()
+    abortRef.current = controller
     setError(null)
     setResult(null)
     try {
@@ -130,7 +136,8 @@ export function useResumeTailor(config: ResumeConfig) {
           model,
           source.text,
           jobDescription,
-          additionalNotes
+          additionalNotes,
+          controller.signal
         )
         if (run !== runId.current) return
 
@@ -154,7 +161,8 @@ export function useResumeTailor(config: ResumeConfig) {
           model,
           source.latex,
           jobDescription,
-          additionalNotes
+          additionalNotes,
+          controller.signal
         )
         if (run !== runId.current) return
         setUpdatedLatex(latex)
@@ -176,8 +184,18 @@ export function useResumeTailor(config: ResumeConfig) {
     }
   }, [provider, model, jobDescription, additionalNotes, apiKey, source, setTailored])
 
+  /** Stops the current request without changing anything else, so a new model can be tried. */
+  const cancel = useCallback(() => {
+    runId.current += 1
+    abortRef.current?.abort()
+    abortRef.current = null
+    setError(null)
+    setStatus('idle')
+  }, [])
+
   const reset = useCallback(async () => {
     const run = ++runId.current
+    abortRef.current?.abort()
     setJobDescription('')
     setAdditionalNotes('')
     setResult(null)
@@ -236,6 +254,7 @@ export function useResumeTailor(config: ResumeConfig) {
     canDownload: !!tailoredUrl,
     canCompare: !!tailoredUrl && !!originalUrl,
     tailor,
+    cancel,
     reset,
     download,
   }

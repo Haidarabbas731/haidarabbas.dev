@@ -100,7 +100,8 @@ describe('useResumeTailor with a text source', () => {
       'gemini-2.5-flash',
       'Priya Nair resume text',
       'Data engineer role',
-      'Lead with Python'
+      'Lead with Python',
+      expect.any(AbortSignal)
     )
     expect(hook.result.current.status).toBe('done')
     expect(hook.result.current.pdfUrl).toBe('blob:made-1')
@@ -261,5 +262,64 @@ describe('useResumeTailor view switching', () => {
     await act(() => hook.result.current.reset())
     expect(hook.result.current.view).toBe('original')
     expect(hook.result.current.canCompare).toBe(false)
+  })
+})
+
+describe('useResumeTailor cancel', () => {
+  it('stops the request, returns to idle, and ignores a late result', async () => {
+    let finish: (v: unknown) => void = () => {}
+    mocks.tailorStructured.mockReturnValue(new Promise((r) => (finish = r)))
+    const hook = await setup(textSource)
+    fill(hook)
+
+    let pending: Promise<void> = Promise.resolve()
+    act(() => {
+      pending = hook.result.current.tailor()
+    })
+    await waitFor(() => expect(hook.result.current.status).toBe('tailoring'))
+    const signal = mocks.tailorStructured.mock.calls[0][6] as AbortSignal
+    expect(signal.aborted).toBe(false)
+
+    act(() => hook.result.current.cancel())
+    expect(signal.aborted).toBe(true)
+    expect(hook.result.current.status).toBe('idle')
+    expect(hook.result.current.error).toBeNull()
+
+    await act(async () => {
+      finish({ data: SAMPLE_DATA, warnings: [] })
+      await pending
+    })
+    expect(hook.result.current.status).toBe('idle')
+    expect(hook.result.current.resumeData).toBeNull()
+    expect(mocks.renderResumePdf).not.toHaveBeenCalled()
+  })
+
+  it('keeps the job description and lets the user tailor again after cancelling', async () => {
+    mocks.tailorStructured.mockReturnValueOnce(new Promise(() => {}))
+    const hook = await setup(textSource)
+    fill(hook)
+    act(() => {
+      void hook.result.current.tailor()
+    })
+    await waitFor(() => expect(hook.result.current.status).toBe('tailoring'))
+    act(() => hook.result.current.cancel())
+
+    expect(hook.result.current.jobDescription).toBe('Data engineer role')
+    expect(hook.result.current.canTailor).toBe(true)
+    await act(() => hook.result.current.tailor())
+    expect(hook.result.current.status).toBe('done')
+  })
+
+  it('aborts an in-flight request when reset is pressed', async () => {
+    mocks.tailorStructured.mockReturnValue(new Promise(() => {}))
+    const hook = await setup(textSource)
+    fill(hook)
+    act(() => {
+      void hook.result.current.tailor()
+    })
+    await waitFor(() => expect(hook.result.current.status).toBe('tailoring'))
+    const signal = mocks.tailorStructured.mock.calls[0][6] as AbortSignal
+    await act(() => hook.result.current.reset())
+    expect(signal.aborted).toBe(true)
   })
 })

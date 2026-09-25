@@ -1,5 +1,18 @@
 import '@testing-library/jest-dom'
 
+// jsdom lacks these browser APIs, which popovers and command lists rely on
+if (typeof window !== 'undefined') {
+  const g = globalThis as { ResizeObserver?: unknown }
+  if (typeof g.ResizeObserver === 'undefined') {
+    g.ResizeObserver = class {
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    }
+  }
+  if (!Element.prototype.scrollIntoView) Element.prototype.scrollIntoView = () => {}
+}
+
 // Tests that opt into the Node environment have no window
 if (typeof window !== 'undefined') {
   Object.defineProperty(window, 'matchMedia', {

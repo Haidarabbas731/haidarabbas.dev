@@ -1,4 +1,5 @@
 import { AlertCircle, CheckCircle2, Download, Loader2, RotateCcw, Sparkles } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { explainError } from '@/services/explainError'
 import type { TailorStatus } from '@/types/resume'
@@ -13,7 +14,14 @@ interface ResumeActionsProps {
   onDownload: () => void
   /** Goes back to the provider, key and model settings. */
   onReconfigure: () => void
+  /** Opens the model picker. When `retry` is true, choosing a model runs the tailoring again. */
+  onPickModel: (retry: boolean) => void
+  /** Stops the request that is running. */
+  onCancel: () => void
 }
+
+/** How long a request runs before we offer to stop it and try another model. */
+export const SLOW_AFTER_MS = 20_000
 
 const PROGRESS: Partial<Record<TailorStatus, string>> = {
   tailoring: 'Reading the job and rewriting your resume...',
@@ -32,8 +40,20 @@ export function ResumeActions({
   onReset,
   onDownload,
   onReconfigure,
+  onPickModel,
+  onCancel,
 }: ResumeActionsProps) {
   const isProcessing = status === 'tailoring' || status === 'compiling'
+  const [slow, setSlow] = useState(false)
+
+  useEffect(() => {
+    if (!isProcessing) {
+      setSlow(false)
+      return
+    }
+    const timer = setTimeout(() => setSlow(true), SLOW_AFTER_MS)
+    return () => clearTimeout(timer)
+  }, [isProcessing])
   const problem = status === 'error' && error ? explainError(error) : null
 
   return (
@@ -107,6 +127,31 @@ export function ResumeActions({
           </div>
         )}
 
+        {isProcessing && slow && (
+          <div
+            className="mt-2 space-y-1.5 text-xs py-2 px-3 rounded-md font-mono-jb animate-in fade-in duration-200"
+            style={{
+              color: 'hsl(var(--foreground) / 0.8)',
+              background: 'hsl(var(--warning) / 0.08)',
+              border: '1px solid hsl(var(--warning) / 0.35)',
+            }}
+          >
+            <p className="leading-relaxed">
+              This is taking longer than usual. Some models are slow.
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                onCancel()
+                onPickModel(true)
+              }}
+              className={linkButton}
+            >
+              Stop and choose another model
+            </button>
+          </div>
+        )}
+
         {status === 'done' && (
           <div
             className="flex items-center gap-2 text-xs py-2 px-3 rounded-md font-mono-jb animate-in fade-in duration-200"
@@ -153,11 +198,16 @@ export function ResumeActions({
             </details>
           )}
 
-          {(problem.canRetry || problem.needsSettings) && (
+          {(problem.canRetry || problem.suggestModel || problem.needsSettings) && (
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 pl-5">
               {problem.canRetry && canTailor && (
                 <button type="button" onClick={onTailor} className={linkButton}>
                   Try again
+                </button>
+              )}
+              {problem.suggestModel && (
+                <button type="button" onClick={() => onPickModel(canTailor)} className={linkButton}>
+                  Choose another model
                 </button>
               )}
               {problem.needsSettings && (

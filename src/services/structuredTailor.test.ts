@@ -125,3 +125,23 @@ describe('bad API keys', () => {
     expect(fetchMock).not.toHaveBeenCalled()
   })
 })
+
+describe('stopping a request', () => {
+  it('lets the caller abort the network request', async () => {
+    const fetchMock = mockFetch(geminiReply(JSON.stringify(SAMPLE_DATA)))
+    const controller = new AbortController()
+    const pending = tailorStructured('gemini', KEY, 'm', SAMPLE_SOURCE, 'jd', '', controller.signal)
+
+    const sent = fetchMock.mock.calls[0][1].signal as AbortSignal
+    expect(sent.aborted).toBe(false)
+    controller.abort()
+    expect(sent.aborted).toBe(true)
+    await pending
+  })
+
+  it('still times out on its own when no signal is given', async () => {
+    const fetchMock = mockFetch(geminiReply(JSON.stringify(SAMPLE_DATA)))
+    await tailorStructured('gemini', KEY, 'm', SAMPLE_SOURCE, 'jd')
+    expect(fetchMock.mock.calls[0][1].signal).toBeInstanceOf(AbortSignal)
+  })
+})

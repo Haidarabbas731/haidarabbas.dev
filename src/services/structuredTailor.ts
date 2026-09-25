@@ -53,14 +53,15 @@ export async function tailorStructured(
   model: string,
   resumeText: string,
   jobDescription: string,
-  additionalNotes = ''
+  additionalNotes = '',
+  signal?: AbortSignal
 ): Promise<StructuredResult> {
   const prompt = buildStructuredPrompt(resumeText, jobDescription, additionalNotes)
   const retryPrompt = `${prompt}\n\nYour previous reply was not valid JSON. Return only the JSON object.`
 
   let lastError: unknown
   for (const p of [prompt, retryPrompt]) {
-    const raw = await callModel(provider, apiKey, model, p, { json: true })
+    const raw = await callModel(provider, apiKey, model, p, { json: true, signal })
     try {
       const data = parseResumeJson(raw)
       return { data, warnings: checkAgainstSource(data, resumeText) }

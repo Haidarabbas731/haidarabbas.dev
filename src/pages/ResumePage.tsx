@@ -6,12 +6,15 @@ import Navbar from '@/components/Navbar'
 import { AccessModeSelector } from '@/components/resume/AccessModeSelector'
 import { ChangesView } from '@/components/resume/ChangesView'
 import { JobDescriptionInput } from '@/components/resume/JobDescriptionInput'
+import { ModelSelector } from '@/components/resume/ModelSelector'
 import { PdfPreview } from '@/components/resume/PdfPreview'
 import { ResultTabs } from '@/components/resume/ResultTabs'
 import { ResumeActions } from '@/components/resume/ResumeActions'
 import { ResumeWarnings } from '@/components/resume/ResumeWarnings'
 import { useResumeTailor } from '@/hooks/useResumeTailor'
-import type { Provider, ResumeConfig, ResumeSource } from '@/types/resume'
+import { saveLastModel } from '@/services/authService'
+import { fetchModels } from '@/services/modelService'
+import type { ModelInfo, Provider, ResumeConfig, ResumeSource } from '@/types/resume'
 
 export default function ResumePage() {
   // Config set when user authenticates/configures
@@ -35,6 +38,7 @@ export default function ResumePage() {
     error,
     canTailor,
     canDownload,
+    cancel,
     showing,
     view,
     setView,
@@ -47,6 +51,58 @@ export default function ResumePage() {
     reset,
     download,
   } = useResumeTailor(config)
+
+  // The model list feeds the picker in the ready bar, so the model can be changed in place
+  const [models, setModels] = useState<ModelInfo[]>([])
+  const [modelsLoading, setModelsLoading] = useState(false)
+  useEffect(() => {
+    if (!isConfigured || !config.apiKey) return
+    let stale = false
+    setModelsLoading(true)
+    fetchModels(config.provider, config.apiKey)
+      .then((list) => {
+        if (!stale) setModels(list)
+      })
+      .finally(() => {
+        if (!stale) setModelsLoading(false)
+      })
+    return () => {
+      stale = true
+    }
+  }, [isConfigured, config.provider, config.apiKey])
+
+  const [pickerOpen, setPickerOpen] = useState(false)
+  const barRef = useRef<HTMLDivElement>(null)
+  // Set when the picker was opened from an error or a slow request, so choosing retries
+  const retryAfterPick = useRef(false)
+  const [retryPending, setRetryPending] = useState(false)
+
+  function pickModel(retry: boolean) {
+    retryAfterPick.current = retry
+    barRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    setPickerOpen(true)
+  }
+
+  function handlePickerOpenChange(open: boolean) {
+    setPickerOpen(open)
+    if (!open) retryAfterPick.current = false
+  }
+
+  function handleModelChange(model: string) {
+    setConfig((c) => ({ ...c, model }))
+    saveLastModel(config.provider, model)
+    if (retryAfterPick.current) {
+      retryAfterPick.current = false
+      setRetryPending(true)
+    }
+  }
+
+  // "tailor" is recreated when the model changes, so this runs with the newly chosen model
+  useEffect(() => {
+    if (!retryPending || !canTailor) return
+    setRetryPending(false)
+    void tailor()
+  }, [retryPending, canTailor, tailor])
 
   // On phones the result sits below the inputs, so bring it into view when it is ready
   const previewRef = useRef<HTMLDivElement>(null)
@@ -131,14 +187,15 @@ export default function ResumePage() {
           <div className="space-y-6">
             {/* Reconfigure bar */}
             <div
-              className="flex items-center justify-between px-4 py-3 rounded-xl border"
+              ref={barRef}
+              className="flex flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3 rounded-xl border"
               style={{
                 background: 'hsl(var(--card) / 0.5)',
                 borderColor: 'hsl(var(--primary) / 0.2)',
                 boxShadow: '0 2px 16px hsl(var(--primary) / 0.06)',
               }}
             >
-              <div className="flex items-center gap-3 text-xs">
+              <div className="flex items-center gap-3 text-xs sm:order-1">
                 <span
                   className="w-2 h-2 rounded-full shrink-0"
                   style={{ background: 'hsl(var(--primary))' }}
@@ -156,21 +213,24 @@ export default function ResumePage() {
                 >
                   {config.provider === 'gemini' ? 'Gemini' : 'OpenRouter'}
                 </span>
-                <span
-                  className="px-2 py-0.5 rounded-full text-xs font-medium max-w-[160px] truncate hidden sm:inline-block font-mono-jb"
-                  style={{
-                    background: 'hsl(var(--card))',
-                    color: 'hsl(var(--foreground) / 0.7)',
-                    border: '1px solid hsl(var(--border) / 0.5)',
-                  }}
-                >
-                  {config.model}
-                </span>
+              </div>
+              <div className="order-3 w-full basis-full sm:order-2 sm:w-72 sm:basis-auto">
+                <ModelSelector
+                  compact
+                  models={models}
+                  value={config.model}
+                  onChange={handleModelChange}
+                  isLoading={modelsLoading && models.length === 0}
+                  placeholder={config.model || 'Select model...'}
+                  open={pickerOpen}
+                  onOpenChange={handlePickerOpenChange}
+                  disabled={status === 'tailoring' || status === 'compiling'}
+                />
               </div>
               <button
                 type="button"
                 onClick={handleReconfigure}
-                className="text-xs transition-colors hover:text-primary font-mono-jb"
+                className="ml-auto text-xs transition-colors hover:text-primary font-mono-jb sm:order-3"
                 style={{ color: 'hsl(var(--muted-foreground))' }}
               >
                 ← Reconfigure
@@ -205,6 +265,8 @@ export default function ResumePage() {
                     onReset={reset}
                     onDownload={download}
                     onReconfigure={handleReconfigure}
+                    onPickModel={pickModel}
+                    onCancel={cancel}
                   />
                   <ResumeWarnings warnings={warnings} />
                 </div>

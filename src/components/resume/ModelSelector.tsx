@@ -19,6 +19,11 @@ interface ModelSelectorProps {
   isLoading?: boolean
   disabled?: boolean
   placeholder?: string
+  /** Smaller trigger, for use in a toolbar. */
+  compact?: boolean
+  /** Set both to control the popover from outside, for example to open it from an error. */
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
 }
 
 export function ModelSelector({
@@ -28,8 +33,16 @@ export function ModelSelector({
   isLoading,
   disabled,
   placeholder = 'Select model...',
+  compact,
+  open: controlledOpen,
+  onOpenChange,
 }: ModelSelectorProps) {
-  const [open, setOpen] = useState(false)
+  const [innerOpen, setInnerOpen] = useState(false)
+  const open = controlledOpen ?? innerOpen
+  const setOpen = (next: boolean) => {
+    if (controlledOpen === undefined) setInnerOpen(next)
+    onOpenChange?.(next)
+  }
 
   const selectedModel = models.find((m) => m.id === value)
 
@@ -40,7 +53,8 @@ export function ModelSelector({
           type="button"
           disabled={disabled || isLoading}
           className={cn(
-            'w-full flex items-center justify-between px-3 py-2.5 rounded-md border text-sm transition font-mono-jb',
+            'w-full flex items-center justify-between rounded-md border transition font-mono-jb',
+            compact ? 'px-2.5 py-1.5 text-xs' : 'px-3 py-2.5 text-sm',
             'disabled:opacity-40 disabled:cursor-not-allowed',
             open ? 'border-primary/50' : 'border-border/50 hover:border-primary/30'
           )}
@@ -78,7 +92,7 @@ export function ModelSelector({
         </button>
       </PopoverTrigger>
       <PopoverContent
-        className="p-0 w-[var(--radix-popover-trigger-width)]"
+        className="p-0 w-[var(--radix-popover-trigger-width)] min-w-[300px]"
         style={{
           background: 'hsl(var(--card))',
           borderColor: 'hsl(var(--primary) / 0.3)',
