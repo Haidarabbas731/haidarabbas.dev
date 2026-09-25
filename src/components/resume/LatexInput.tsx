@@ -44,7 +44,7 @@ export function LatexInput({ value, onChange, disabled }: LatexInputProps) {
           type="button"
           disabled={disabled}
           onClick={() => fileRef.current?.click()}
-          className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-md border transition-all duration-200 disabled:opacity-40 hover:scale-105 font-mono-jb"
+          className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-md border transition duration-200 disabled:opacity-40 hover:scale-105 font-mono-jb"
           style={{
             borderColor: 'hsl(var(--primary) / 0.3)',
             color: 'hsl(var(--primary))',
@@ -83,7 +83,7 @@ export function LatexInput({ value, onChange, disabled }: LatexInputProps) {
           value={value}
           onChange={(e) => onChange(e.target.value)}
           disabled={disabled}
-          className="font-mono-jb text-xs min-h-[160px] resize-none transition-all"
+          className="font-mono-jb text-xs min-h-[160px] resize-none transition"
           style={{
             background: 'hsl(var(--card) / 0.4)',
             borderColor: value ? 'hsl(var(--primary) / 0.2)' : 'hsl(var(--border) / 0.5)',

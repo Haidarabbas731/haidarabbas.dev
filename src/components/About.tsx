@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import Reveal from './Reveal'
 import SectionTitle from './SectionTitle'
 
 type Token = { id: number; text: string; color: string }
@@ -151,10 +152,12 @@ const About = () => (
     <SectionTitle number="01" title="About" id="about" />
 
     <div className="grid md:grid-cols-2 gap-12 md:gap-16 items-center">
-      <TerminalCard />
+      <Reveal>
+        <TerminalCard />
+      </Reveal>
 
       {/* Bio */}
-      <div>
+      <Reveal delay={100}>
         <p
           className="text-lg leading-relaxed mb-4"
           style={{ color: 'hsl(var(--foreground) / 0.85)' }}
@@ -173,7 +176,7 @@ const About = () => (
           My focus is on making AI practical: systems that perform consistently, automate meaningful
           tasks, and hold up in real-world use.
         </p>
-      </div>
+      </Reveal>
     </div>
   </section>
 )

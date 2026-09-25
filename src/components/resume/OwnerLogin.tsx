@@ -41,7 +41,7 @@ export function OwnerLogin({ onAuthenticated }: OwnerLoginProps) {
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
         <div
-          className={`flex items-center gap-3 px-4 py-3 rounded-md border transition-all focus-within:border-primary/50 focus-within:[box-shadow:0_0_12px_hsl(var(--primary)/0.15)] ${shake ? 'animate-shake' : ''}`}
+          className={`flex items-center gap-3 px-4 py-3 rounded-md border transition focus-within:border-primary/50 focus-within:[box-shadow:0_0_12px_hsl(var(--primary)/0.15)] ${shake ? 'animate-shake' : ''}`}
           style={{
             background: 'hsl(var(--card) / 0.4)',
             borderColor: error ? 'hsl(var(--destructive) / 0.5)' : 'hsl(var(--border) / 0.5)',
@@ -78,7 +78,7 @@ export function OwnerLogin({ onAuthenticated }: OwnerLoginProps) {
       <button
         type="submit"
         disabled={loading || !password.trim()}
-        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-md text-sm font-medium transition-all disabled:opacity-40 disabled:cursor-not-allowed font-mono-jb"
+        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-md text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed font-mono-jb"
         style={{
           background: 'hsl(var(--primary))',
           color: 'hsl(var(--primary-foreground))',

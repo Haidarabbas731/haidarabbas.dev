@@ -46,7 +46,7 @@ export function JobDescriptionInput({
           onChange={(e) => onJobDescriptionChange(e.target.value.slice(0, MAX_JD_CHARS))}
           disabled={disabled}
           placeholder="Paste the full job description here..."
-          className="min-h-[220px] resize-none text-sm leading-relaxed transition-all font-body"
+          className="min-h-[220px] resize-none text-sm leading-relaxed transition font-body"
           style={{
             background: 'hsl(var(--card) / 0.4)',
             borderColor: isOverLimit ? 'hsl(var(--destructive) / 0.5)' : 'hsl(var(--border) / 0.5)',
@@ -59,7 +59,7 @@ export function JobDescriptionInput({
           style={{ background: 'hsl(var(--border) / 0.4)' }}
         >
           <div
-            className="h-full rounded-full transition-all duration-300"
+            className="h-full rounded-full transition-[width,background-color] duration-300"
             style={{
               width: `${Math.min((jobDescription.length / MAX_JD_CHARS) * 100, 100)}%`,
               background: isOverLimit ? 'hsl(var(--destructive))' : 'hsl(var(--primary))',
@@ -100,7 +100,7 @@ export function JobDescriptionInput({
           onChange={(e) => onAdditionalNotesChange(e.target.value)}
           disabled={disabled}
           placeholder="e.g. Emphasize Python experience, tone down research focus..."
-          className="min-h-[80px] resize-none text-sm leading-relaxed transition-all font-body"
+          className="min-h-[80px] resize-none text-sm leading-relaxed transition font-body"
           style={{
             background: 'hsl(var(--card) / 0.4)',
             borderColor: 'hsl(var(--border) / 0.5)',

@@ -338,3 +338,47 @@ html.theme-fading *::after {
     background: hsl(var(--background)) !important;
   }
 }
+
+/* Scroll reveal: fade and lift once. Entry uses the strong ease-out curve. */
+.reveal {
+  /* Lets wrapped grid items shrink like they did unwrapped (e.g. the code card on phones) */
+  min-width: 0;
+  transition:
+    opacity 400ms cubic-bezier(0.23, 1, 0.32, 1),
+    transform 400ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.reveal:not(.is-visible) {
+  opacity: 0;
+  transform: translateY(0.5rem);
+}
+
+/* Mobile menu: enters in 200ms, leaves faster (150ms). Hidden state also drops it from tab order. */
+.mobile-menu {
+  transition:
+    opacity 150ms cubic-bezier(0.23, 1, 0.32, 1),
+    transform 150ms cubic-bezier(0.23, 1, 0.32, 1),
+    visibility 150ms;
+}
+
+.mobile-menu[data-open="true"] {
+  transition-duration: 200ms;
+}
+
+.mobile-menu[data-open="false"] {
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(-0.5rem);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .mobile-menu {
+    transition-duration: 150ms;
+  }
+
+  .reveal:not(.is-visible),
+  .mobile-menu[data-open="false"] {
+    transform: none;
+  }
+}

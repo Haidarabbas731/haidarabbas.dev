@@ -183,7 +183,7 @@ const Hero = () => {
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-10">
           <a
             href="#projects"
-            className="px-6 py-3 text-sm font-medium rounded-md transition-all"
+            className="px-6 py-3 text-sm font-medium rounded-md transition"
             style={{
               background: 'hsl(var(--primary))',
               color: 'hsl(var(--primary-foreground))',
@@ -195,7 +195,7 @@ const Hero = () => {
           </a>
           <Link
             to="/resume"
-            className="px-6 py-3 text-sm font-medium rounded-md border transition-all hover:bg-accent/10"
+            className="px-6 py-3 text-sm font-medium rounded-md border transition hover:bg-accent/10"
             style={{ borderColor: 'hsl(var(--border))', fontFamily: 'var(--font-mono)' }}
           >
             Try Resume AI
@@ -230,7 +230,7 @@ const Hero = () => {
               aria-label={s.label}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-10 h-10 rounded-full border flex items-center justify-center transition-all text-muted-foreground hover:text-[color:var(--social-hover)] hover:border-primary hover:shadow-[0_0_12px_hsl(var(--primary)/0.4)]"
+              className="w-10 h-10 rounded-full border flex items-center justify-center transition text-muted-foreground hover:text-[color:var(--social-hover)] hover:border-primary hover:shadow-[0_0_12px_hsl(var(--primary)/0.4)]"
               style={
                 {
                   borderColor: 'hsl(var(--border))',

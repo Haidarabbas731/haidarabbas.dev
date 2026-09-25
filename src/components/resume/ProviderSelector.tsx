@@ -23,7 +23,7 @@ export function ProviderSelector({ value, onChange, disabled }: ProviderSelector
           onClick={() => onChange(p.id)}
           aria-pressed={value === p.id}
           className={cn(
-            'flex-1 py-2.5 px-4 rounded-md border text-sm transition-all duration-300 active:scale-[0.98] font-mono-jb',
+            'flex-1 py-2.5 px-4 rounded-md border text-sm transition duration-300 active:scale-[0.98] font-mono-jb',
             'disabled:opacity-40 disabled:cursor-not-allowed',
             value === p.id
               ? 'border-primary/60 text-primary'

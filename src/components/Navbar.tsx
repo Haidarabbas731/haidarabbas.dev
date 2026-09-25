@@ -75,7 +75,7 @@ const Navbar = () => {
           ))}
           <Link
             to="/resume"
-            className="text-xs px-3 py-1.5 rounded-full border transition-all hover:shadow-[0_0_12px_hsl(var(--primary)/0.4)]"
+            className="text-xs px-3 py-1.5 rounded-full border transition hover:shadow-[0_0_12px_hsl(var(--primary)/0.4)]"
             style={{
               fontFamily: 'var(--font-mono)',
               color: 'hsl(var(--primary))',
@@ -94,6 +94,7 @@ const Navbar = () => {
           onClick={() => setOpen(!open)}
           className="md:hidden flex flex-col gap-1.5"
           aria-label="Toggle menu"
+          aria-expanded={open}
         >
           <span
             className={`block w-6 h-0.5 bg-foreground transition-transform ${open ? 'rotate-45 translate-y-2' : ''}`}
@@ -108,38 +109,40 @@ const Navbar = () => {
       </div>
 
       {/* Mobile menu */}
-      {open && (
-        <div
-          className="md:hidden px-6 pb-6 flex flex-col gap-4"
-          style={{ background: 'hsl(var(--background) / 0.95)' }}
-        >
-          {navLinks.map((l) => (
-            <a
-              key={l.id}
-              href={`/#${l.id}`}
-              onClick={goToSection(l.id)}
-              className="text-sm tracking-wide"
-              style={{ fontFamily: 'var(--font-mono)', color: 'hsl(var(--muted-foreground))' }}
-            >
-              {l.label}
-            </a>
-          ))}
-          <Link
-            to="/resume"
-            onClick={() => setOpen(false)}
-            className="text-xs px-3 py-1.5 rounded-full border w-fit transition-all"
-            style={{
-              fontFamily: 'var(--font-mono)',
-              color: 'hsl(var(--primary))',
-              borderColor: 'hsl(var(--primary) / 0.35)',
-              background: 'hsl(var(--primary) / 0.06)',
-            }}
+      <div
+        data-open={open}
+        className="mobile-menu md:hidden absolute top-full left-0 right-0 px-6 pt-4 pb-6 flex flex-col gap-4 border-b"
+        style={{
+          background: 'hsl(var(--background) / 0.95)',
+          borderColor: 'hsl(var(--border) / 0.3)',
+        }}
+      >
+        {navLinks.map((l) => (
+          <a
+            key={l.id}
+            href={`/#${l.id}`}
+            onClick={goToSection(l.id)}
+            className="text-sm tracking-wide"
+            style={{ fontFamily: 'var(--font-mono)', color: 'hsl(var(--muted-foreground))' }}
           >
-            Resume AI ✦
-          </Link>
-          <ThemeToggle />
-        </div>
-      )}
+            {l.label}
+          </a>
+        ))}
+        <Link
+          to="/resume"
+          onClick={() => setOpen(false)}
+          className="text-xs px-3 py-1.5 rounded-full border w-fit transition"
+          style={{
+            fontFamily: 'var(--font-mono)',
+            color: 'hsl(var(--primary))',
+            borderColor: 'hsl(var(--primary) / 0.35)',
+            background: 'hsl(var(--primary) / 0.06)',
+          }}
+        >
+          Resume AI ✦
+        </Link>
+        <ThemeToggle />
+      </div>
     </nav>
   )
 }

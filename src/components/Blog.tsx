@@ -10,7 +10,7 @@ const Blog = () => (
         <a
           key={post.title}
           href={post.url}
-          className="group rounded-lg border p-6 transition-all hover:border-primary/30 hover:-translate-y-1 hover:shadow-lg"
+          className="group rounded-lg border p-6 transition hover:border-primary/30 hover:-translate-y-1 hover:shadow-lg"
           style={{ borderColor: 'hsl(var(--border))', background: 'hsl(var(--card))' }}
         >
           <div className="flex items-center gap-2 mb-3">

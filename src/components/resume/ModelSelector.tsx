@@ -40,7 +40,7 @@ export function ModelSelector({
           type="button"
           disabled={disabled || isLoading}
           className={cn(
-            'w-full flex items-center justify-between px-3 py-2.5 rounded-md border text-sm transition-all font-mono-jb',
+            'w-full flex items-center justify-between px-3 py-2.5 rounded-md border text-sm transition font-mono-jb',
             'disabled:opacity-40 disabled:cursor-not-allowed',
             open ? 'border-primary/50' : 'border-border/50 hover:border-primary/30'
           )}

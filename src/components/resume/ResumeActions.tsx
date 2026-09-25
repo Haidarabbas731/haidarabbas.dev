@@ -39,7 +39,7 @@ export function ResumeActions({
         type="button"
         onClick={onTailor}
         disabled={!canTailor || isProcessing}
-        className="w-full flex items-center justify-center gap-2 py-3 px-6 h-auto text-sm font-medium transition-all duration-200 hover:scale-[1.01] font-mono-jb"
+        className="w-full flex items-center justify-center gap-2 py-3 px-6 h-auto text-sm font-medium transition duration-200 hover:scale-[1.01] font-mono-jb"
         style={{
           background:
             canTailor && !isProcessing ? 'hsl(var(--primary))' : 'hsl(var(--primary) / 0.6)',
@@ -92,7 +92,7 @@ export function ResumeActions({
       {/* Status indicator */}
       {info && (
         <div
-          className={`flex items-center gap-2 text-xs py-2 px-3 rounded-md transition-all duration-300 font-mono-jb ${status === 'done' ? 'animate-in fade-in zoom-in-95' : ''}`}
+          className={`flex items-center gap-2 text-xs py-2 px-3 rounded-md transition duration-300 font-mono-jb ${status === 'done' ? 'animate-in fade-in zoom-in-95' : ''}`}
           style={{
             color: info.color,
             background: `${info.color}10`,

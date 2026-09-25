@@ -74,7 +74,7 @@ export function PublicConfig({ onReady, onClear }: PublicConfigProps) {
           <TrustBadge />
         </div>
         <div
-          className="flex items-center gap-3 px-3 py-2.5 rounded-md border transition-all"
+          className="flex items-center gap-3 px-3 py-2.5 rounded-md border transition"
           style={{
             background: 'hsl(var(--card) / 0.4)',
             borderColor: apiKey ? 'hsl(var(--primary) / 0.3)' : 'hsl(var(--border) / 0.5)',
@@ -124,7 +124,7 @@ export function PublicConfig({ onReady, onClear }: PublicConfigProps) {
         type="button"
         onClick={handleApply}
         disabled={!canApply}
-        className="w-full py-2.5 rounded-md text-sm font-medium transition-all disabled:opacity-40 disabled:cursor-not-allowed font-mono-jb"
+        className="w-full py-2.5 rounded-md text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed font-mono-jb"
         style={{
           background: canApply ? 'hsl(var(--primary))' : 'hsl(var(--primary) / 0.4)',
           color: 'hsl(var(--primary-foreground))',

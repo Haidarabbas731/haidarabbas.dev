@@ -89,14 +89,14 @@ export function AccessModeSelector({ onReady }: AccessModeSelectorProps) {
         >
           <TabsTrigger
             value="public"
-            className="flex-1 flex items-center justify-center gap-2 py-3.5 text-sm rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-primary/8 data-[state=inactive]:text-muted-foreground transition-all font-mono-jb"
+            className="flex-1 flex items-center justify-center gap-2 py-3.5 text-sm rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-primary/8 data-[state=inactive]:text-muted-foreground transition font-mono-jb"
           >
             <Users size={13} />
             Public
           </TabsTrigger>
           <TabsTrigger
             value="owner"
-            className="flex-1 flex items-center justify-center gap-2 py-3.5 text-sm rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-primary/8 data-[state=inactive]:text-muted-foreground transition-all font-mono-jb"
+            className="flex-1 flex items-center justify-center gap-2 py-3.5 text-sm rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-primary/8 data-[state=inactive]:text-muted-foreground transition font-mono-jb"
           >
             <Shield size={13} />
             Owner
@@ -173,7 +173,7 @@ export function AccessModeSelector({ onReady }: AccessModeSelectorProps) {
                   type="button"
                   onClick={handleOwnerLaunch}
                   disabled={!ownerHasKey || !ownerModel}
-                  className="w-full py-2.5 rounded-md text-sm font-medium transition-all disabled:opacity-40 disabled:cursor-not-allowed font-mono-jb"
+                  className="w-full py-2.5 rounded-md text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed font-mono-jb"
                   style={{
                     background: 'hsl(var(--primary))',
                     color: 'hsl(var(--primary-foreground))',

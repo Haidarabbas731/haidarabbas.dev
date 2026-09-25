@@ -7,7 +7,7 @@ export function TrustBadge() {
       <TooltipTrigger asChild>
         <button
           type="button"
-          className="group inline-flex items-center gap-1.5 text-[11px] px-2 py-1 rounded-md border transition-all duration-200 font-mono-jb hover:border-primary/40 hover:text-primary"
+          className="group inline-flex items-center gap-1.5 text-[11px] px-2 py-1 rounded-md border transition duration-200 font-mono-jb hover:border-primary/40 hover:text-primary"
           style={{
             color: 'hsl(var(--muted-foreground))',
             borderColor: 'hsl(var(--border) / 0.4)',

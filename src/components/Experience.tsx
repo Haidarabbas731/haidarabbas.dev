@@ -1,31 +1,12 @@
-import { useEffect, useRef, useState } from 'react'
 import { experiences } from '@/data/experience'
+import Reveal from './Reveal'
 import SectionTitle from './SectionTitle'
 
 const TimelineEntry = ({ exp, index }: { exp: (typeof experiences)[0]; index: number }) => {
-  const ref = useRef<HTMLDivElement>(null)
-  const [visible, setVisible] = useState(false)
-
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    const obs = new IntersectionObserver(
-      ([e]) => {
-        if (e.isIntersecting) setVisible(true)
-      },
-      { threshold: 0.2 }
-    )
-    obs.observe(el)
-    return () => obs.disconnect()
-  }, [])
-
   const isLeft = index % 2 === 0
 
   return (
-    <div
-      ref={ref}
-      className={`relative flex md:items-center mb-12 transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
-    >
+    <Reveal className="relative flex md:items-center mb-12">
       <div
         className={`hidden md:block w-1/2 ${isLeft ? 'pr-12 text-right' : 'pl-12 text-left order-2'}`}
       >
@@ -107,7 +88,7 @@ const TimelineEntry = ({ exp, index }: { exp: (typeof experiences)[0]; index: nu
           ))}
         </ul>
       </div>
-    </div>
+    </Reveal>
   )
 }
 

@@ -33,7 +33,7 @@ export function PdfPreview({ pdfUrl, status, hasLatex }: PdfPreviewProps) {
     <div className="flex flex-col h-full gap-3">
       {/* Preview area */}
       <div
-        className="relative flex-1 rounded-lg overflow-hidden border transition-all duration-500"
+        className="relative flex-1 rounded-lg overflow-hidden border transition duration-500"
         style={{
           minHeight: '500px',
           borderColor: pdfUrl ? 'hsl(var(--primary) / 0.3)' : 'hsl(var(--border) / 0.4)',
@@ -166,7 +166,7 @@ export function PdfPreview({ pdfUrl, status, hasLatex }: PdfPreviewProps) {
                   <div key={step.key} className="flex items-center gap-1">
                     <div className="flex flex-col items-center gap-1">
                       <div
-                        className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold transition-all font-mono-jb"
+                        className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold transition font-mono-jb"
                         style={{
                           background: isActive
                             ? 'hsl(var(--primary))'
@@ -192,7 +192,7 @@ export function PdfPreview({ pdfUrl, status, hasLatex }: PdfPreviewProps) {
                     </div>
                     {i < steps.length - 1 && (
                       <div
-                        className="w-6 h-px mb-4 transition-all"
+                        className="w-6 h-px mb-4 transition"
                         style={{
                           background: isPast
                             ? 'hsl(var(--primary) / 0.4)'
