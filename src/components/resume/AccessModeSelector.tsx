@@ -4,7 +4,7 @@ import { toast } from 'sonner'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { BASE_RESUME_LATEX } from '@/data/baseResume'
 import { clearStoredData, getLastModel, saveLastModel } from '@/services/authService'
-import { fetchModels, getDefaultModel } from '@/services/modelService'
+import { fetchModels, getDefaultModel, pickValidModel } from '@/services/modelService'
 import type { AuthResult, ModelInfo, Provider, ResumeSource } from '@/types/resume'
 import { ModelSelector } from './ModelSelector'
 import { OwnerLogin } from './OwnerLogin'
@@ -34,7 +34,10 @@ export function AccessModeSelector({ onReady }: AccessModeSelectorProps) {
     setOwnerModelsLoading(true)
     setOwnerModel(getLastModel(ownerProvider) ?? getDefaultModel(ownerProvider))
     fetchModels(ownerProvider, apiKey)
-      .then((m) => setOwnerModels(m))
+      .then((m) => {
+        setOwnerModels(m)
+        setOwnerModel((current) => pickValidModel(current, m))
+      })
       .finally(() => setOwnerModelsLoading(false))
   }, [ownerAuth, ownerProvider])
 

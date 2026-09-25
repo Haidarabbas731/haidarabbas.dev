@@ -2,7 +2,7 @@ import { Key } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { checkApiKey } from '@/services/apiKey'
 import { getLastModel, saveLastModel, savePublicConfig } from '@/services/authService'
-import { fetchModels, getDefaultModel } from '@/services/modelService'
+import { fetchModels, getDefaultModel, pickValidModel } from '@/services/modelService'
 import type { ModelInfo, Provider, ResumeSource } from '@/types/resume'
 import { ModelSelector } from './ModelSelector'
 import { ProviderSelector } from './ProviderSelector'
@@ -35,7 +35,11 @@ export function PublicConfig({ onReady, onClear }: PublicConfigProps) {
     setModelsLoading(true)
     setModel(getLastModel(provider) ?? getDefaultModel(provider))
     fetchModels(provider, apiKey || undefined)
-      .then((m) => setModels(m))
+      .then((m) => {
+        setModels(m)
+        // A remembered or default model that is gone or retired falls back to a listed one
+        setModel((current) => pickValidModel(current, m))
+      })
       .finally(() => setModelsLoading(false))
   }, [provider, apiKey])
 

@@ -59,3 +59,29 @@ describe('ModelSelector (controlled)', () => {
     expect(onChange).toHaveBeenCalledWith('b/big')
   })
 })
+
+describe('ModelSelector groups and prices', () => {
+  const grouped = [
+    { id: 'a/rec', name: 'Rec Model', tag: 'recommended' as const, price: 0.75 },
+    { id: 'b/free:free', name: 'Free Model', tag: 'free' as const, price: 0 },
+    { id: 'c/other', name: 'Other Model', price: 3 },
+  ]
+
+  it('labels the groups and shows each price', () => {
+    render(<ModelSelector models={grouped} value="a/rec" onChange={() => {}} open />)
+    for (const heading of ['Recommended', 'Free to use', 'All models']) {
+      expect(screen.getByText(heading)).toBeInTheDocument()
+    }
+    expect(screen.getByText(/\$0\.75 \/ 1M in/)).toBeInTheDocument()
+    expect(screen.getByText(/Free$/)).toBeInTheDocument()
+    expect(screen.getByText(/\$3\.00 \/ 1M in/)).toBeInTheDocument()
+  })
+
+  it('skips the headings when there is only one group', () => {
+    render(
+      <ModelSelector models={[{ id: 'x/y', name: 'Only' }]} value="x/y" onChange={() => {}} open />
+    )
+    expect(screen.queryByText('All models')).toBeNull()
+    expect(screen.queryByText('Recommended')).toBeNull()
+  })
+})

@@ -7,6 +7,12 @@ export type TailorStatus = 'idle' | 'tailoring' | 'compiling' | 'done' | 'error'
 export interface ModelInfo {
   id: string
   name: string
+  /** Groups the model in the picker. Untagged models fall under "All models". */
+  tag?: 'recommended' | 'free'
+  /** Release time in seconds since 1970, used to list the newest models first. */
+  created?: number
+  /** Input price in US dollars per million tokens. Zero for free models. */
+  price?: number
 }
 
 export interface ProviderConfig {

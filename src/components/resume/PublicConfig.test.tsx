@@ -3,7 +3,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { PublicConfig } from './PublicConfig'
 
-vi.mock('@/services/modelService', () => ({
+vi.mock('@/services/modelService', async (importActual) => ({
+  ...(await importActual<typeof import('@/services/modelService')>()),
   fetchModels: vi.fn().mockResolvedValue([{ id: 'test/model', name: 'Test Model' }]),
   getDefaultModel: () => 'test/model',
 }))

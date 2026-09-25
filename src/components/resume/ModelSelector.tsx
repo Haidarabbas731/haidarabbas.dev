@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/command'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
+import { describePrice } from '@/services/modelService'
 import type { ModelInfo } from '@/types/resume'
 
 interface ModelSelectorProps {
@@ -45,6 +46,13 @@ export function ModelSelector({
   }
 
   const selectedModel = models.find((m) => m.id === value)
+
+  // Headings only help when there is more than one group to tell apart
+  const groups = [
+    { label: 'Recommended', models: models.filter((m) => m.tag === 'recommended') },
+    { label: 'Free to use', models: models.filter((m) => m.tag === 'free') },
+    { label: 'All models', models: models.filter((m) => !m.tag) },
+  ].filter((g) => g.models.length > 0)
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -141,41 +149,43 @@ export function ModelSelector({
                 >
                   No models found
                 </CommandEmpty>
-                <CommandGroup>
-                  {models.map((m) => (
-                    <CommandItem
-                      key={m.id}
-                      value={`${m.name} ${m.id}`}
-                      onSelect={() => {
-                        onChange(m.id)
-                        setOpen(false)
-                      }}
-                      className="flex items-start justify-between gap-3 px-3 py-2.5 cursor-pointer font-mono-jb"
-                    >
-                      <div>
-                        <div
-                          className="font-medium text-sm"
-                          style={{ color: 'hsl(var(--foreground))' }}
-                        >
-                          {m.name}
+                {groups.map((g) => (
+                  <CommandGroup key={g.label} heading={groups.length > 1 ? g.label : undefined}>
+                    {g.models.map((m) => (
+                      <CommandItem
+                        key={m.id}
+                        value={`${m.name} ${m.id}`}
+                        onSelect={() => {
+                          onChange(m.id)
+                          setOpen(false)
+                        }}
+                        className="flex items-start justify-between gap-3 px-3 py-2.5 cursor-pointer font-mono-jb"
+                      >
+                        <div>
+                          <div
+                            className="font-medium text-sm"
+                            style={{ color: 'hsl(var(--foreground))' }}
+                          >
+                            {m.name}
+                          </div>
+                          <div
+                            className="text-xs opacity-50 mt-0.5"
+                            style={{ color: 'hsl(var(--muted-foreground))' }}
+                          >
+                            {[m.id, describePrice(m.price)].filter(Boolean).join('  ·  ')}
+                          </div>
                         </div>
-                        <div
-                          className="text-xs opacity-50 mt-0.5"
-                          style={{ color: 'hsl(var(--muted-foreground))' }}
-                        >
-                          {m.id}
-                        </div>
-                      </div>
-                      {m.id === value && (
-                        <Check
-                          size={12}
-                          className="shrink-0 mt-1"
-                          style={{ color: 'hsl(var(--primary))' }}
-                        />
-                      )}
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
+                        {m.id === value && (
+                          <Check
+                            size={12}
+                            className="shrink-0 mt-1"
+                            style={{ color: 'hsl(var(--primary))' }}
+                          />
+                        )}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                ))}
               </>
             )}
           </CommandList>
