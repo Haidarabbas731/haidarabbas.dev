@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { renderResumePdf } from '@/services/renderResumePdf'
+import { diffResume, matchedKeywords, type ResumeDiff } from '@/services/resumeDiff'
 import { compileLaTeX, tailorResume } from '@/services/resumeService'
 import { tailorStructured } from '@/services/structuredTailor'
 import type { ResumeConfig, TailorStatus } from '@/types/resume'
@@ -13,6 +14,10 @@ export type ResultView = 'tailored' | 'original' | 'changes'
 interface TailorResult {
   data: ResumeData
   warnings: ResumeWarning[]
+  /** How the tailored resume differs from the original text. */
+  changes: ResumeDiff
+  /** Skills the tailored resume shares with the job description it was made for. */
+  keywords: string[]
 }
 
 function downloadName(data: ResumeData | null): string {
@@ -135,7 +140,11 @@ export function useResumeTailor(config: ResumeConfig) {
           URL.revokeObjectURL(url)
           return
         }
-        setResult(tailored)
+        setResult({
+          ...tailored,
+          changes: diffResume(tailored.data, source.text),
+          keywords: matchedKeywords(tailored.data, jobDescription),
+        })
         setTailored(url)
         setView('tailored')
       } else {
@@ -219,6 +228,8 @@ export function useResumeTailor(config: ResumeConfig) {
     updatedLatex,
     resumeData: result?.data ?? null,
     warnings: result?.warnings ?? [],
+    changes: result?.changes ?? null,
+    keywords: result?.keywords ?? [],
     status,
     error,
     canTailor,

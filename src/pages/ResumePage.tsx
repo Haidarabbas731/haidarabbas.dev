@@ -4,8 +4,10 @@ import CustomCursor from '@/components/CustomCursor'
 import GrainOverlay from '@/components/GrainOverlay'
 import Navbar from '@/components/Navbar'
 import { AccessModeSelector } from '@/components/resume/AccessModeSelector'
+import { ChangesView } from '@/components/resume/ChangesView'
 import { JobDescriptionInput } from '@/components/resume/JobDescriptionInput'
 import { PdfPreview } from '@/components/resume/PdfPreview'
+import { ResultTabs } from '@/components/resume/ResultTabs'
 import { ResumeActions } from '@/components/resume/ResumeActions'
 import { ResumeWarnings } from '@/components/resume/ResumeWarnings'
 import { useResumeTailor } from '@/hooks/useResumeTailor'
@@ -34,11 +36,20 @@ export default function ResumePage() {
     canTailor,
     canDownload,
     showing,
+    view,
+    setView,
+    originalUrl,
+    tailoredUrl,
+    changes,
+    keywords,
     warnings,
     tailor,
     reset,
     download,
   } = useResumeTailor(config)
+
+  // Tabs only appear once there is a tailored version and something to compare it with
+  const showTabs = !!tailoredUrl && (!!originalUrl || !!changes)
 
   // The page owns the uploaded original's object URL, so it outlives the setup screen
   useEffect(() => {
@@ -211,12 +222,30 @@ export default function ResumePage() {
                     boxShadow: 'var(--shadow-card)',
                   }}
                 >
-                  <PdfPreview
-                    pdfUrl={pdfUrl}
-                    status={status}
-                    hasSource={!!config.source}
-                    showing={showing}
-                  />
+                  {showTabs && (
+                    <div className="mb-3">
+                      <ResultTabs
+                        value={view}
+                        onChange={setView}
+                        hasOriginal={!!originalUrl}
+                        changeCount={
+                          changes
+                            ? changes.stats.reworded + changes.stats.added + changes.stats.dropped
+                            : undefined
+                        }
+                      />
+                    </div>
+                  )}
+                  {view === 'changes' && changes ? (
+                    <ChangesView diff={changes} keywords={keywords} />
+                  ) : (
+                    <PdfPreview
+                      pdfUrl={pdfUrl}
+                      status={status}
+                      hasSource={!!config.source}
+                      showing={showTabs ? null : showing}
+                    />
+                  )}
                 </div>
               </div>
             </div>
