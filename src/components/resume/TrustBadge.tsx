@@ -26,7 +26,7 @@ export function TrustBadge() {
         side="bottom"
         align="end"
         sideOffset={8}
-        className="max-w-[280px] p-0 border-0 shadow-none bg-transparent"
+        className="max-w-[300px] p-0 border-0 shadow-none bg-transparent"
       >
         <div
           className="rounded-xl border p-4 text-xs leading-relaxed font-body"
@@ -52,7 +52,7 @@ export function TrustBadge() {
               className="text-xs font-semibold font-mono-jb"
               style={{ color: 'hsl(var(--foreground) / 0.9)' }}
             >
-              Your data stays local
+              Where your data goes
             </span>
           </div>
 
@@ -62,8 +62,9 @@ export function TrustBadge() {
             <strong style={{ color: 'hsl(var(--primary) / 0.9)', fontWeight: 600 }}>
               only in your browser's local storage
             </strong>
-            . Nothing is sent to or stored on our servers. AI calls go directly from your browser to
-            Google or OpenRouter.
+            . We store nothing on our servers. To do the job, your resume text is sent from your
+            browser to your chosen AI provider (Google or OpenRouter) to be rewritten, and to a
+            third-party LaTeX service (latex.ytotech.com) to build the PDF.
           </p>
 
           {/* Divider + footer pill */}
@@ -80,7 +81,7 @@ export function TrustBadge() {
                 className="w-1.5 h-1.5 rounded-full"
                 style={{ background: 'hsl(var(--primary))' }}
               />
-              Zero server storage
+              Nothing stored by us
             </div>
           </div>
         </div>
