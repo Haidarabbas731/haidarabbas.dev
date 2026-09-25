@@ -84,12 +84,12 @@ export function ChangesView({ diff, keywords }: ChangesViewProps) {
 
       {keywords.length > 0 && (
         <div className="space-y-2">
-          <h3
+          <h2
             className="text-xs uppercase tracking-widest font-mono-jb"
             style={{ color: 'hsl(var(--muted-foreground))' }}
           >
             Matches the job
-          </h3>
+          </h2>
           <ul className="flex flex-wrap gap-1.5">
             {keywords.map((k) => (
               <li
@@ -111,7 +111,7 @@ export function ChangesView({ diff, keywords }: ChangesViewProps) {
       {diff.sections.map((section) => (
         <section key={`${section.title}|${section.subtitle ?? ''}`} className="space-y-1.5">
           <div>
-            <h3 className="text-sm font-bold font-display">{section.title}</h3>
+            <h2 className="text-sm font-bold font-display">{section.title}</h2>
             {section.subtitle && (
               <p className="text-xs font-mono-jb" style={{ color: 'hsl(var(--muted-foreground))' }}>
                 {section.subtitle}
@@ -128,7 +128,7 @@ export function ChangesView({ diff, keywords }: ChangesViewProps) {
 
       {diff.dropped.length > 0 && (
         <section className="space-y-1.5">
-          <h3 className="text-sm font-bold font-display">Removed from your original</h3>
+          <h2 className="text-sm font-bold font-display">Removed from your original</h2>
           <ul className="space-y-1">
             {diff.dropped.map((text) => (
               <Row key={text} marker="-" label="Removed:" text={text} style={REMOVED} />

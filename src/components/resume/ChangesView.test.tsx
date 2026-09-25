@@ -43,6 +43,14 @@ describe('ChangesView', () => {
     expect(screen.getAllByText('Removed:')).toHaveLength(1)
   })
 
+  it('uses level 2 headings, since the page title is the only level 1', () => {
+    render(<ChangesView diff={diff} keywords={['Python']} />)
+    for (const name of ['Matches the job', 'Data Engineer', 'Removed from your original']) {
+      expect(screen.getByRole('heading', { level: 2, name })).toBeInTheDocument()
+    }
+    expect(screen.queryAllByRole('heading', { level: 3 })).toHaveLength(0)
+  })
+
   it('omits the keywords block when there are none', () => {
     render(<ChangesView diff={diff} keywords={[]} />)
     expect(screen.queryByText('Matches the job')).toBeNull()
