@@ -57,7 +57,7 @@ export default function ResumePage() {
         className="fixed top-0 left-0 w-full h-full pointer-events-none z-0"
         style={{
           background:
-            'radial-gradient(ellipse 80% 50% at 50% -10%, hsl(175 80% 50% / 0.06) 0%, transparent 70%)',
+            'radial-gradient(ellipse 80% 50% at 50% -10%, hsl(var(--primary) / 0.06) 0%, transparent 70%)',
         }}
       />
 
@@ -165,7 +165,7 @@ export default function ResumePage() {
                     background: 'hsl(var(--card) / 0.5)',
                     borderColor: 'hsl(var(--primary) / 0.12)',
                     backdropFilter: 'blur(16px)',
-                    boxShadow: '0 4px 24px hsl(0 0% 0% / 0.2)',
+                    boxShadow: 'var(--shadow-card)',
                   }}
                 >
                   <JobDescriptionInput
@@ -195,7 +195,7 @@ export default function ResumePage() {
                     background: 'hsl(var(--card) / 0.3)',
                     borderColor: 'hsl(var(--primary) / 0.1)',
                     backdropFilter: 'blur(12px)',
-                    boxShadow: '0 4px 24px hsl(0 0% 0% / 0.15)',
+                    boxShadow: 'var(--shadow-card)',
                   }}
                 >
                   <PdfPreview pdfUrl={pdfUrl} status={status} hasLatex={!!config.baseLatex} />

@@ -82,7 +82,7 @@ export function ModelSelector({
         style={{
           background: 'hsl(var(--card))',
           borderColor: 'hsl(var(--primary) / 0.3)',
-          boxShadow: '0 8px 32px hsl(0 0% 0% / 0.4)',
+          boxShadow: 'var(--shadow-popover)',
         }}
         align="start"
       >

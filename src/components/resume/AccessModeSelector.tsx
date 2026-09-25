@@ -76,7 +76,7 @@ export function AccessModeSelector({ onReady }: AccessModeSelectorProps) {
         background: 'hsl(var(--card) / 0.6)',
         borderColor: 'hsl(var(--primary) / 0.15)',
         backdropFilter: 'blur(16px)',
-        boxShadow: '0 8px 32px hsl(0 0% 0% / 0.3)',
+        boxShadow: 'var(--shadow-popover)',
       }}
     >
       <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'owner' | 'public')}>
@@ -101,7 +101,7 @@ export function AccessModeSelector({ onReady }: AccessModeSelectorProps) {
             <Shield size={13} />
             Owner
             {ownerAuth?.authorized && (
-              <CheckCircle2 size={11} style={{ color: 'hsl(175 80% 50%)' }} />
+              <CheckCircle2 size={11} style={{ color: 'hsl(var(--success))' }} />
             )}
           </TabsTrigger>
         </TabsList>
@@ -120,9 +120,9 @@ export function AccessModeSelector({ onReady }: AccessModeSelectorProps) {
                 <div
                   className="flex items-center gap-2 text-xs py-2 px-3 rounded-md font-mono-jb"
                   style={{
-                    color: 'hsl(175 80% 50%)',
-                    background: 'hsl(175 80% 50% / 0.08)',
-                    border: '1px solid hsl(175 80% 50% / 0.25)',
+                    color: 'hsl(var(--success))',
+                    background: 'hsl(var(--success) / 0.08)',
+                    border: '1px solid hsl(var(--success) / 0.25)',
                   }}
                 >
                   <CheckCircle2 size={12} />

@@ -16,7 +16,7 @@ const statusConfig: Record<TailorStatus, { label: string; color: string } | null
   idle: null,
   tailoring: { label: 'AI is tailoring your resume...', color: 'hsl(var(--primary))' },
   compiling: { label: 'Compiling PDF...', color: 'hsl(var(--primary))' },
-  done: { label: 'Resume tailored successfully', color: 'hsl(175 80% 50%)' },
+  done: { label: 'Resume tailored successfully', color: 'hsl(var(--success))' },
   error: { label: '', color: 'hsl(var(--destructive))' },
 }
 

@@ -3,9 +3,9 @@ import SectionTitle from './SectionTitle'
 
 type Token = { id: number; text: string; color: string }
 
-const FG = 'hsl(var(--foreground))'
-const KEY = 'hsl(var(--primary))'
-const STR = '#a5d6a7'
+const FG = 'hsl(var(--terminal-fg))'
+const KEY = 'hsl(var(--terminal-key))'
+const STR = 'hsl(var(--terminal-str))'
 
 const TOKENS: Token[] = [
   { text: 'haidar', color: FG },
@@ -108,21 +108,21 @@ const TerminalCard = () => {
       ref={containerRef}
       className="rounded-lg border overflow-hidden"
       style={{
-        background: '#111',
-        borderColor: 'hsl(var(--primary) / 0.3)',
-        boxShadow: '0 0 30px hsl(var(--primary) / 0.1)',
+        background: 'hsl(var(--terminal-bg))',
+        borderColor: 'hsl(var(--terminal-key) / 0.3)',
+        boxShadow: '0 0 30px hsl(var(--terminal-key) / 0.1)',
         fontFamily: 'var(--font-mono)',
       }}
     >
       {/* Title bar */}
       <div
         className="flex items-center gap-2 px-4 py-3 border-b"
-        style={{ borderColor: 'hsl(var(--border))' }}
+        style={{ borderColor: 'hsl(var(--terminal-border))' }}
       >
-        <span className="w-3 h-3 rounded-full" style={{ background: '#ff5f57' }} />
-        <span className="w-3 h-3 rounded-full" style={{ background: '#febc2e' }} />
-        <span className="w-3 h-3 rounded-full" style={{ background: '#28c840' }} />
-        <span className="ml-3 text-xs" style={{ color: 'hsl(var(--muted-foreground))' }}>
+        <span className="w-3 h-3 rounded-full" style={{ background: 'hsl(var(--dot-red))' }} />
+        <span className="w-3 h-3 rounded-full" style={{ background: 'hsl(var(--dot-yellow))' }} />
+        <span className="w-3 h-3 rounded-full" style={{ background: 'hsl(var(--dot-green))' }} />
+        <span className="ml-3 text-xs" style={{ color: 'hsl(var(--terminal-muted))' }}>
           about.py
         </span>
       </div>
@@ -136,7 +136,7 @@ const TerminalCard = () => {
           ))}
           <span
             className={done && !reducedMotion ? 'animate-blink' : ''}
-            style={{ color: 'hsl(var(--primary))' }}
+            style={{ color: 'hsl(var(--terminal-key))' }}
           >
             ▌
           </span>

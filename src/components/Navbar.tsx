@@ -1,6 +1,7 @@
 import type { MouseEvent } from 'react'
 import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import ThemeToggle from './ThemeToggle'
 
 const navLinks = [
   { label: 'About', id: 'about' },
@@ -84,6 +85,7 @@ const Navbar = () => {
           >
             Resume AI ✦
           </Link>
+          <ThemeToggle />
         </div>
 
         {/* Mobile toggle */}
@@ -135,6 +137,7 @@ const Navbar = () => {
           >
             Resume AI ✦
           </Link>
+          <ThemeToggle />
         </div>
       )}
     </nav>

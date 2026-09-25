@@ -49,6 +49,25 @@ const Hero = () => {
 
     let animId: number | null = null
     let running = false
+
+    // Colours come from CSS tokens so the network follows the theme
+    let dotColor = ''
+    let lineRgb = ''
+    let lineAlpha = 0.15
+    const readColors = () => {
+      const cs = getComputedStyle(document.documentElement)
+      const hsl = cs.getPropertyValue('--particle').trim()
+      const dotAlpha = cs.getPropertyValue('--particle-dot-alpha').trim() || '0.4'
+      lineAlpha = Number.parseFloat(cs.getPropertyValue('--particle-line-alpha')) || 0.15
+      dotColor = `hsl(${hsl} / ${dotAlpha})`
+      lineRgb = hsl
+    }
+    readColors()
+    const themeObserver = new MutationObserver(readColors)
+    themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    })
     const particles: { x: number; y: number; vx: number; vy: number }[] = []
     const count = 45
     const maxDist = 120
@@ -81,7 +100,7 @@ const Hero = () => {
 
         ctx.beginPath()
         ctx.arc(p.x, p.y, 1.5, 0, Math.PI * 2)
-        ctx.fillStyle = 'hsla(175, 80%, 60%, 0.4)'
+        ctx.fillStyle = dotColor
         ctx.fill()
 
         for (let j = i + 1; j < count; j++) {
@@ -94,7 +113,7 @@ const Hero = () => {
             ctx.beginPath()
             ctx.moveTo(p.x, p.y)
             ctx.lineTo(q.x, q.y)
-            ctx.strokeStyle = `hsla(175, 80%, 60%, ${0.15 * (1 - dist / maxDist)})`
+            ctx.strokeStyle = `hsl(${lineRgb} / ${lineAlpha * (1 - dist / maxDist)})`
             ctx.stroke()
           }
         }
@@ -131,6 +150,7 @@ const Hero = () => {
 
     return () => {
       stop()
+      themeObserver.disconnect()
       io.disconnect()
       document.removeEventListener('visibilitychange', sync)
       window.removeEventListener('resize', resize)
