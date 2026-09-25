@@ -23,9 +23,9 @@ async function fetchGeminiModels(apiKey?: string): Promise<ModelInfo[]> {
   if (!apiKey) return DEFAULT_GEMINI_MODELS
 
   try {
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`
-    )
+    const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models', {
+      headers: { 'x-goog-api-key': apiKey },
+    })
     if (!response.ok) return DEFAULT_GEMINI_MODELS
 
     const data = await response.json()
