@@ -131,12 +131,12 @@ export function AccessModeSelector({ onReady }: AccessModeSelectorProps) {
 
                 {/* Provider selector */}
                 <div className="space-y-2">
-                  <label
+                  <span
                     className="text-xs uppercase tracking-widest font-mono-jb"
                     style={{ color: 'hsl(var(--muted-foreground))' }}
                   >
                     Provider
-                  </label>
+                  </span>
                   <ProviderSelector
                     value={ownerProvider}
                     onChange={setOwnerProvider}
@@ -154,12 +154,12 @@ export function AccessModeSelector({ onReady }: AccessModeSelectorProps) {
 
                 {/* Model selector */}
                 <div className="space-y-2">
-                  <label
+                  <span
                     className="text-xs uppercase tracking-widest font-mono-jb"
                     style={{ color: 'hsl(var(--muted-foreground))' }}
                   >
                     Model
-                  </label>
+                  </span>
                   <ModelSelector
                     models={ownerModels}
                     value={ownerModel}

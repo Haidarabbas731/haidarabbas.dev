@@ -95,8 +95,8 @@ export function ModelSelector({
           <CommandList className="max-h-60">
             {isLoading ? (
               <div className="p-2 space-y-1">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <div key={i} className="flex flex-col gap-1 px-3 py-2.5 rounded-md">
+                {['a', 'b', 'c', 'd', 'e'].map((id, i) => (
+                  <div key={id} className="flex flex-col gap-1 px-3 py-2.5 rounded-md">
                     <div
                       className="h-3.5 rounded animate-shimmer"
                       style={{

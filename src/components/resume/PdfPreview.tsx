@@ -91,8 +91,8 @@ export function PdfPreview({ pdfUrl, status, hasLatex }: PdfPreviewProps) {
               { label: 60, lines: [85, 70, 75] },
               { label: 55, lines: [90, 65] },
               { label: 50, lines: [80, 72, 68, 60] },
-            ].map((block, bi) => (
-              <div key={bi} className="space-y-1.5">
+            ].map((block) => (
+              <div key={block.label} className="space-y-1.5">
                 <div
                   className="h-3 rounded animate-shimmer"
                   style={{
@@ -102,9 +102,9 @@ export function PdfPreview({ pdfUrl, status, hasLatex }: PdfPreviewProps) {
                     backgroundSize: '200% 100%',
                   }}
                 />
-                {block.lines.map((w, li) => (
+                {block.lines.map((w) => (
                   <div
-                    key={li}
+                    key={w}
                     className="h-2.5 rounded animate-shimmer"
                     style={{
                       width: `${w}%`,

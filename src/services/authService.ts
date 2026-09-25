@@ -62,5 +62,5 @@ export function getLastModel(provider: Provider): string | null {
  */
 export function clearStoredData(): void {
   const keys = Object.keys(localStorage).filter((k) => k.startsWith(STORAGE_PREFIX))
-  keys.forEach((k) => localStorage.removeItem(k))
+  for (const k of keys) localStorage.removeItem(k)
 }

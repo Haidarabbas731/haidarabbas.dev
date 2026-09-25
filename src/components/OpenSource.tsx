@@ -146,8 +146,10 @@ const OpenSource = () => {
         {loading ? (
           <div className="inline-flex gap-[3px]">
             {Array.from({ length: 52 }).map((_, i) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: positional grid cell, no identity
               <div key={i} className="flex flex-col gap-[3px]">
                 {Array.from({ length: 7 }).map((_, j) => (
+                  // biome-ignore lint/suspicious/noArrayIndexKey: positional grid cell, no identity
                   <div key={j} className="w-3 h-3 rounded-sm bg-muted animate-pulse" />
                 ))}
               </div>
@@ -156,9 +158,11 @@ const OpenSource = () => {
         ) : (
           <div className="inline-flex gap-[3px]">
             {displayWeeks?.map((week, wi) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: positional grid cell, no identity
               <div key={wi} className="flex flex-col gap-[3px]">
                 {week.map((day, di) => (
                   <div
+                    // biome-ignore lint/suspicious/noArrayIndexKey: positional grid cell, no identity
                     key={di}
                     className="w-3 h-3 rounded-sm transition-colors"
                     style={{ background: getColor(day.count) }}
@@ -179,6 +183,7 @@ const OpenSource = () => {
       <div className="grid md:grid-cols-3 gap-4">
         {!displayRepos
           ? Array.from({ length: 6 }).map((_, i) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: positional grid cell, no identity
               <div key={i} className="rounded-lg border border-border bg-card p-5 animate-pulse">
                 <div className="h-4 w-2/3 rounded bg-muted mb-3" />
                 <div className="h-3 w-full rounded bg-muted mb-2" />

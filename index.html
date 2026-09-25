@@ -9,14 +9,14 @@
   <script>
     (() => {
           try {
-            var t = localStorage.getItem('theme');
-            var dark = t === 'dark' || (t !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
-            var r = document.documentElement;
+            const t = localStorage.getItem('theme');
+            const dark = t === 'dark' || (t !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
+            const r = document.documentElement;
             r.classList.add(dark ? 'dark' : 'light');
             r.style.colorScheme = dark ? 'dark' : 'light';
-            var m = document.querySelector('meta[name="theme-color"]');
+            const m = document.querySelector('meta[name="theme-color"]');
             if (m) m.setAttribute('content', dark ? '#09090c' : '#faf9f6');
-          } catch (e) {}
+          } catch {}
         })();
   </script>
   <title>H.B. Portfolio</title>

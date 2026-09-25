@@ -52,12 +52,12 @@ export function PublicConfig({ onReady, onClear }: PublicConfigProps) {
     <div className="space-y-5">
       {/* Provider selection */}
       <div className="space-y-2">
-        <label
+        <span
           className="text-xs uppercase tracking-widest font-mono-jb"
           style={{ color: 'hsl(var(--muted-foreground))' }}
         >
           AI Provider
-        </label>
+        </span>
         <ProviderSelector value={provider} onChange={handleProviderChange} />
       </div>
 
@@ -102,12 +102,12 @@ export function PublicConfig({ onReady, onClear }: PublicConfigProps) {
 
       {/* Model selection */}
       <div className="space-y-2">
-        <label
+        <span
           className="text-xs uppercase tracking-widest font-mono-jb"
           style={{ color: 'hsl(var(--muted-foreground))' }}
         >
           Model
-        </label>
+        </span>
         <ModelSelector
           models={models}
           value={model}
