@@ -10,7 +10,7 @@ const Footer = () => (
         © {new Date().getFullYear()} HAIDARABBAS BALOSPURA. All rights reserved.
       </span>
 
-      <div className="flex gap-6">
+      <div className="flex flex-wrap justify-center gap-x-6 gap-y-2">
         {navLinks.map((l) => (
           <a
             key={l}
