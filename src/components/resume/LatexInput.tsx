@@ -83,7 +83,7 @@ export function LatexInput({ value, onChange, disabled }: LatexInputProps) {
           value={value}
           onChange={(e) => onChange(e.target.value)}
           disabled={disabled}
-          className="font-mono-jb text-xs min-h-[160px] resize-none transition"
+          className="font-mono-jb text-base md:text-xs min-h-[160px] resize-none transition"
           style={{
             background: 'hsl(var(--card) / 0.4)',
             borderColor: value ? 'hsl(var(--primary) / 0.2)' : 'hsl(var(--border) / 0.5)',

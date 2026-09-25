@@ -54,7 +54,7 @@ export function OwnerLogin({ onAuthenticated }: OwnerLoginProps) {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Enter owner password..."
             aria-label="Owner password"
-            className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground font-mono-jb"
+            className="flex-1 bg-transparent text-base md:text-sm outline-none placeholder:text-muted-foreground font-mono-jb"
             style={{ color: 'hsl(var(--foreground))' }}
             autoComplete="current-password"
           />

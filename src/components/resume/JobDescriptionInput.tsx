@@ -46,7 +46,7 @@ export function JobDescriptionInput({
           onChange={(e) => onJobDescriptionChange(e.target.value.slice(0, MAX_JD_CHARS))}
           disabled={disabled}
           placeholder="Paste the full job description here..."
-          className="min-h-[220px] resize-none text-sm leading-relaxed transition font-body"
+          className="min-h-[220px] resize-none text-base md:text-sm leading-relaxed transition font-body"
           style={{
             background: 'hsl(var(--card) / 0.4)',
             borderColor: isOverLimit ? 'hsl(var(--destructive) / 0.5)' : 'hsl(var(--border) / 0.5)',
@@ -100,7 +100,7 @@ export function JobDescriptionInput({
           onChange={(e) => onAdditionalNotesChange(e.target.value)}
           disabled={disabled}
           placeholder="e.g. Emphasize Python experience, tone down research focus..."
-          className="min-h-[80px] resize-none text-sm leading-relaxed transition font-body"
+          className="min-h-[80px] resize-none text-base md:text-sm leading-relaxed transition font-body"
           style={{
             background: 'hsl(var(--card) / 0.4)',
             borderColor: 'hsl(var(--border) / 0.5)',
