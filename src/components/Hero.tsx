@@ -1,40 +1,17 @@
-import { useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { socials } from '@/data/socials'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import { siteButton } from '@/lib/ui'
 import { cn } from '@/lib/utils'
 
 const roles = ['AI/ML Engineer', 'Full Stack Developer', 'LLM Architect']
 
+/** Position in the entrance sequence; the hero-in animation spaces each step 60ms apart */
+const step = (i: number) => ({ '--i': i }) as React.CSSProperties
+
 const Hero = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const [roleIndex, setRoleIndex] = useState(0)
-  const [text, setText] = useState('')
-  const [deleting, setDeleting] = useState(false)
   const reducedMotion = usePrefersReducedMotion()
-
-  // Typewriter effect
-  useEffect(() => {
-    const role = roles[roleIndex]
-    let timer: ReturnType<typeof setTimeout>
-
-    if (!deleting) {
-      if (text.length < role.length) {
-        timer = setTimeout(() => setText(role.slice(0, text.length + 1)), 80)
-      } else {
-        timer = setTimeout(() => setDeleting(true), 2000)
-      }
-    } else {
-      if (text.length > 0) {
-        timer = setTimeout(() => setText(text.slice(0, -1)), 40)
-      } else {
-        setDeleting(false)
-        setRoleIndex((roleIndex + 1) % roles.length)
-      }
-    }
-    return () => clearTimeout(timer)
-  }, [text, deleting, roleIndex])
 
   // Particle network
   useEffect(() => {
@@ -71,30 +48,47 @@ const Hero = () => {
     const maxDist = 120
     const maxDistSq = maxDist * maxDist
 
+    // Drawing happens in CSS pixels; the backing store is scaled by the device pixel ratio so it stays sharp
+    let width = 0
+    let height = 0
     const resize = () => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
+      const dpr = window.devicePixelRatio || 1
+      width = canvas.clientWidth
+      height = canvas.clientHeight
+      canvas.width = Math.round(width * dpr)
+      canvas.height = Math.round(height * dpr)
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+      for (const p of particles) {
+        p.x = Math.min(p.x, width)
+        p.y = Math.min(p.y, height)
+      }
     }
     resize()
-    window.addEventListener('resize', resize)
 
     for (let i = 0; i < count; i++) {
       particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
+        x: Math.random() * width,
+        y: Math.random() * height,
         vx: (Math.random() - 0.5) * 0.5,
         vy: (Math.random() - 0.5) * 0.5,
       })
     }
 
+    let resizeTimer: ReturnType<typeof setTimeout> | undefined
+    const resizeObserver = new ResizeObserver(() => {
+      clearTimeout(resizeTimer)
+      resizeTimer = setTimeout(resize, 150)
+    })
+    resizeObserver.observe(canvas)
+
     const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      ctx.clearRect(0, 0, width, height)
       for (let i = 0; i < count; i++) {
         const p = particles[i]
         p.x += p.vx
         p.y += p.vy
-        if (p.x < 0 || p.x > canvas.width) p.vx *= -1
-        if (p.y < 0 || p.y > canvas.height) p.vy *= -1
+        if (p.x < 0 || p.x > width) p.vx *= -1
+        if (p.y < 0 || p.y > height) p.vy *= -1
 
         ctx.beginPath()
         ctx.arc(p.x, p.y, 1.5, 0, Math.PI * 2)
@@ -148,30 +142,43 @@ const Hero = () => {
 
     return () => {
       stop()
+      clearTimeout(resizeTimer)
       themeObserver.disconnect()
+      resizeObserver.disconnect()
       io.disconnect()
       document.removeEventListener('visibilitychange', sync)
-      window.removeEventListener('resize', resize)
     }
   }, [reducedMotion])
 
   return (
     <section className="relative min-h-[70vh] flex flex-col items-center justify-center px-6 pt-20 md:pt-24 overflow-hidden">
-      <canvas ref={canvasRef} className="absolute inset-0 z-0" />
+      <canvas ref={canvasRef} className="absolute inset-0 z-0 h-full w-full" />
 
       <div className="relative z-10 text-center max-w-3xl">
-        <h1 className="text-5xl md:text-7xl lg:text-8xl font-black mb-6 font-display tracking-[-0.02em]">
+        <h1
+          className="hero-in text-5xl md:text-7xl lg:text-8xl font-black mb-6 font-display tracking-[-0.02em]"
+          style={step(0)}
+        >
           HAIDARABBAS BALOSPURA
         </h1>
 
-        <div className="h-8 mb-8">
-          <span className="text-lg md:text-xl font-mono-jb text-primary">
-            {text}
-            <span className="animate-pulse">|</span>
-          </span>
-        </div>
+        <p
+          className="hero-in mb-8 flex flex-wrap justify-center gap-x-3 gap-y-1 text-lg md:text-xl font-mono-jb text-primary"
+          style={step(1)}
+        >
+          {roles.map((role, i) => (
+            <Fragment key={role}>
+              {i > 0 && (
+                <span aria-hidden="true" className="opacity-40">
+                  ·
+                </span>
+              )}
+              <span>{role}</span>
+            </Fragment>
+          ))}
+        </p>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-10">
+        <div className="hero-in flex flex-col sm:flex-row gap-4 justify-center" style={step(2)}>
           <a href="#projects" className={siteButton({ variant: 'primary', size: 'lg' })}>
             View My Work
           </a>
@@ -181,23 +188,6 @@ const Hero = () => {
           >
             Try Resume AI
           </Link>
-        </div>
-
-        {/* Social links */}
-        <div className="flex gap-6 justify-center">
-          {socials.map(({ label, href, Icon, hover }) => (
-            <a
-              key={label}
-              href={href}
-              aria-label={label}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-10 h-10 rounded-full border border-border flex items-center justify-center transition text-muted-foreground hover:text-[color:var(--social-hover)] hover:border-primary hover:shadow-[0_0_12px_hsl(var(--primary)/0.4)]"
-              style={{ '--social-hover': hover ?? 'hsl(var(--foreground))' } as React.CSSProperties}
-            >
-              <Icon size={18} />
-            </a>
-          ))}
         </div>
       </div>
     </section>

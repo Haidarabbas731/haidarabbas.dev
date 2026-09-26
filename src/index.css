@@ -147,6 +147,10 @@
 }
 
 :root {
+  /* Motion curves shared by every hand-written transition and animation */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+
   --font-display: "Playfair Display", Georgia, serif;
   --font-mono: "JetBrains Mono", monospace;
   --font-body: "DM Sans", sans-serif;
@@ -160,16 +164,10 @@
     @apply bg-background text-foreground;
     font-family: var(--font-body);
   }
-  /* Custom cursor is only rendered on md+ with a fine pointer and motion allowed */
-  @media (hover: hover) and (pointer: fine) and (min-width: 768px) and (
-      prefers-reduced-motion: no-preference
-    ) {
-    body {
-      cursor: none;
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
     }
-  }
-  html {
-    scroll-behavior: smooth;
   }
   h1,
   h2,
@@ -402,5 +400,42 @@ html.theme-fading *::after {
     from {
       opacity: 0;
     }
+  }
+}
+
+/* Hero entrance: each piece fades and lifts once on load, 60ms apart via --i. */
+@keyframes hero-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+.hero-in {
+  animation: hero-in 400ms var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * 60ms);
+}
+
+/* Plain fade for text that swaps (re-run by changing the element's key) */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.fade-in {
+  animation: fade-in 200ms var(--ease-out) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @keyframes hero-in {
+    from {
+      opacity: 0;
+    }
+  }
+
+  .hero-in {
+    animation-duration: 150ms;
+    animation-delay: 0ms;
   }
 }

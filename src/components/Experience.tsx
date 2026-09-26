@@ -1,4 +1,6 @@
+import { useEffect, useRef, useState } from 'react'
 import { experiences } from '@/data/experience'
+import { observeOnce } from '@/lib/observeOnce'
 import { cn } from '@/lib/utils'
 import Reveal from './Reveal'
 import Section from './Section'
@@ -48,15 +50,32 @@ const TimelineEntry = ({ exp, index }: { exp: ExperienceEntry; index: number }) 
   )
 }
 
-const Experience = () => (
-  <Section number="04" title="Experience" id="experience">
-    <div className="relative">
-      <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-px bg-border" />
-      {experiences.map((exp, i) => (
-        <TimelineEntry key={`${exp.company}-${exp.period}`} exp={exp} index={i} />
-      ))}
-    </div>
-  </Section>
-)
+const Experience = () => {
+  const ref = useRef<HTMLDivElement>(null)
+  const [drawn, setDrawn] = useState(false)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    return observeOnce(el, () => setDrawn(true))
+  }, [])
+
+  return (
+    <Section title="Experience" id="experience">
+      <div ref={ref} className="relative">
+        {/* The centre line draws top to bottom once; it is simply there under reduced motion */}
+        <div
+          className={cn(
+            'timeline-line hidden md:block absolute left-1/2 top-0 bottom-0 w-px bg-border origin-top transition-transform duration-[600ms] ease-in-out-strong motion-reduce:scale-y-100 motion-reduce:transition-none',
+            drawn ? 'scale-y-100' : 'scale-y-0'
+          )}
+        />
+        {experiences.map((exp, i) => (
+          <TimelineEntry key={`${exp.company}-${exp.period}`} exp={exp} index={i} />
+        ))}
+      </div>
+    </Section>
+  )
+}
 
 export default Experience

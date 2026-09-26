@@ -1,4 +1,5 @@
 import { type ReactNode, useEffect, useRef, useState } from 'react'
+import { observeOnce } from '@/lib/observeOnce'
 
 interface RevealProps {
   children: ReactNode
@@ -15,20 +16,7 @@ const Reveal = ({ children, delay = 0, className = '' }: RevealProps) => {
   useEffect(() => {
     const el = ref.current
     if (!el) return
-    if (typeof IntersectionObserver === 'undefined') {
-      setVisible(true)
-      return
-    }
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return
-        setVisible(true)
-        io.disconnect()
-      },
-      { threshold: 0.15, rootMargin: '0px 0px -40px 0px' }
-    )
-    io.observe(el)
-    return () => io.disconnect()
+    return observeOnce(el, () => setVisible(true))
   }, [])
 
   return (

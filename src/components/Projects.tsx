@@ -11,6 +11,7 @@ import { projects } from '@/data/projects'
 import { resolveAsset } from '@/lib/resolveAsset'
 import { siteButton } from '@/lib/ui'
 import { cn } from '@/lib/utils'
+import FadeImage from './FadeImage'
 import Reveal from './Reveal'
 import Section from './Section'
 import WindowChrome from './WindowChrome'
@@ -36,13 +37,16 @@ const Projects = () => {
   }
 
   return (
-    <Section number="03" title="Featured Project" id="projects">
+    <Section title="Featured Project" id="projects">
       <div className="grid md:grid-cols-5 gap-8 md:gap-12 items-center">
         {screenshots.length > 0 && (
           <Reveal className="md:col-span-3">
             <div className="rounded-lg border border-border bg-card overflow-hidden shadow-[0_0_30px_hsl(var(--primary)/0.08)]">
               <WindowChrome>
-                <span className="ml-3 px-3 py-1 text-xs rounded truncate bg-muted text-muted-foreground font-mono-jb">
+                <span
+                  key={screenshots[current]?.label}
+                  className="fade-in ml-3 px-3 py-1 text-xs rounded truncate bg-muted text-muted-foreground font-mono-jb"
+                >
                   {screenshots[current]?.label}
                 </span>
               </WindowChrome>
@@ -51,7 +55,7 @@ const Projects = () => {
                 <CarouselContent className="ml-0">
                   {screenshots.map((shot) => (
                     <CarouselItem key={shot.label} className="pl-0">
-                      <img
+                      <FadeImage
                         src={shot.src}
                         alt={`${project.title}: ${shot.label}`}
                         className="w-full h-auto"
@@ -79,7 +83,7 @@ const Projects = () => {
                       aria-label={`Show ${shot.label} screenshot`}
                       aria-current={current === i}
                       className={cn(
-                        'w-14 h-9 rounded overflow-hidden border-2 transition-colors',
+                        'w-14 h-9 rounded overflow-hidden border-2 transition-[transform,border-color] duration-[160ms] ease-out-strong active:scale-[0.95]',
                         current === i ? 'border-primary' : 'border-border'
                       )}
                     >

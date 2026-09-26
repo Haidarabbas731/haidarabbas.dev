@@ -9,6 +9,10 @@ export default {
     './src/**/*.{ts,tsx}',
   ],
   prefix: '',
+  future: {
+    // hover: styles only apply on devices that can really hover, so touch never sticks
+    hoverOnlyWhenSupported: true,
+  },
   theme: {
     container: {
       center: true,
@@ -74,6 +78,10 @@ export default {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
+      },
+      transitionTimingFunction: {
+        'out-strong': 'var(--ease-out)',
+        'in-out-strong': 'var(--ease-in-out)',
       },
       keyframes: {
         'accordion-down': {

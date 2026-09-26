@@ -1,6 +1,5 @@
 import { Sparkles } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-import CustomCursor from '@/components/CustomCursor'
 import GrainOverlay from '@/components/GrainOverlay'
 import Navbar from '@/components/Navbar'
 import { AccessModeSelector } from '@/components/resume/AccessModeSelector'
@@ -135,7 +134,6 @@ export default function ResumePage() {
 
   return (
     <div className="relative min-h-screen">
-      <CustomCursor />
       <GrainOverlay />
       <Navbar />
 

@@ -143,7 +143,7 @@ const TerminalCard = () => {
 }
 
 const About = () => (
-  <Section number="01" title="About" id="about" compact>
+  <Section title="About" id="about" compact>
     <div className="grid md:grid-cols-2 gap-12 md:gap-16 items-center">
       <Reveal>
         <TerminalCard />

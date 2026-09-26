@@ -5,7 +5,7 @@ interface SectionTitleProps {
 }
 
 const SectionTitle = ({ number, title, id }: SectionTitleProps) => (
-  <div id={id} className="relative mb-12 md:mb-16">
+  <div id={id} className="relative mb-12 md:mb-16 scroll-mt-20">
     <span
       aria-hidden="true"
       className="absolute -top-8 -left-2 text-[8rem] md:text-[12rem] font-bold leading-none select-none pointer-events-none font-mono-jb"

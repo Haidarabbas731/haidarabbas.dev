@@ -9,7 +9,7 @@ const SubHeading = ({ children }: { children: ReactNode }) => (
 )
 
 const Skills = () => (
-  <Section number="02" title="Background" id="skills">
+  <Section title="Background" id="skills">
     <div className="grid md:grid-cols-2 gap-12 md:gap-16">
       {/* Education */}
       <div>
@@ -32,7 +32,7 @@ const Skills = () => (
         <SubHeading>Stack</SubHeading>
         <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
           {skills.map((skill, i) => (
-            <Reveal key={skill.name} delay={Math.min(i, 8) * 40}>
+            <Reveal key={skill.name} delay={Math.min(i, 5) * 40}>
               <a
                 href={skill.url}
                 target="_blank"

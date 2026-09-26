@@ -2,8 +2,12 @@ import type { MouseEvent } from 'react'
 import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { sections } from '@/data/sections'
+import { useActiveSection } from '@/hooks/useActiveSection'
+import { scrollBehavior } from '@/lib/scroll'
 import { cn } from '@/lib/utils'
 import ThemeToggle from './ThemeToggle'
+
+const sectionIds = sections.map((s) => s.id)
 
 function isPlainLeftClick(e: MouseEvent) {
   return e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey
@@ -11,17 +15,22 @@ function isPlainLeftClick(e: MouseEvent) {
 
 interface NavLinksProps {
   onSelect: (id: string) => (e: MouseEvent) => void
+  activeId: string | null
   className?: string
 }
 
-const NavLinks = ({ onSelect, className }: NavLinksProps) => (
+const NavLinks = ({ onSelect, activeId, className }: NavLinksProps) => (
   <>
     {sections.map((s) => (
       <a
         key={s.id}
         href={`/#${s.id}`}
         onClick={onSelect(s.id)}
-        className={cn('text-sm tracking-wide font-mono-jb text-muted-foreground', className)}
+        aria-current={s.id === activeId ? 'location' : undefined}
+        className={cn(
+          'text-sm tracking-wide font-mono-jb text-muted-foreground aria-[current=location]:text-primary',
+          className
+        )}
       >
         {s.label}
       </a>
@@ -39,7 +48,7 @@ const ResumeLink = ({ onClick, className }: ResumeLinkProps) => (
     to="/resume"
     onClick={onClick}
     className={cn(
-      'text-xs px-3 py-1.5 rounded-full border transition font-mono-jb text-primary border-primary/[0.35] bg-primary/[0.06]',
+      'text-xs px-3 py-1.5 rounded-full border transition-[transform,box-shadow] duration-[160ms] ease-out-strong active:scale-[0.97] font-mono-jb text-primary border-primary/[0.35] bg-primary/[0.06]',
       className
     )}
   >
@@ -51,13 +60,14 @@ const Navbar = () => {
   const [open, setOpen] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
+  const activeId = useActiveSection(sectionIds, location.pathname === '/')
 
   const goToSection = (id: string) => (e: MouseEvent) => {
     if (!isPlainLeftClick(e)) return
     e.preventDefault()
     setOpen(false)
     if (location.pathname === '/') {
-      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+      document.getElementById(id)?.scrollIntoView({ behavior: scrollBehavior() })
     } else {
       navigate('/', { state: { scrollTo: id } })
     }
@@ -68,7 +78,7 @@ const Navbar = () => {
     e.preventDefault()
     setOpen(false)
     if (location.pathname === '/') {
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+      window.scrollTo({ top: 0, behavior: scrollBehavior() })
     } else {
       navigate('/')
     }
@@ -93,7 +103,11 @@ const Navbar = () => {
 
         {/* Desktop */}
         <div className="hidden md:flex items-center gap-8">
-          <NavLinks onSelect={goToSection} className="transition-colors hover:text-primary" />
+          <NavLinks
+            onSelect={goToSection}
+            activeId={activeId}
+            className="relative transition-colors duration-150 hover:text-primary after:absolute after:inset-x-0 after:-bottom-1 after:h-px after:origin-left after:scale-x-0 after:bg-primary after:transition-transform after:duration-200 after:ease-out-strong aria-[current=location]:after:scale-x-100 motion-reduce:after:transition-none"
+          />
           <ResumeLink className="hover:shadow-[0_0_12px_hsl(var(--primary)/0.4)]" />
           <ThemeToggle />
         </div>
@@ -127,7 +141,7 @@ const Navbar = () => {
           borderColor: 'hsl(var(--border) / 0.3)',
         }}
       >
-        <NavLinks onSelect={goToSection} />
+        <NavLinks onSelect={goToSection} activeId={activeId} />
         <ResumeLink onClick={() => setOpen(false)} className="w-fit" />
         <ThemeToggle />
       </div>
