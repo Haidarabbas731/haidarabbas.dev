@@ -1,13 +1,9 @@
-import { Github, Linkedin } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import XIcon from './icons/XIcon'
-
-const DiscordIcon = ({ size = 18 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-    <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z" />
-  </svg>
-)
+import { socials } from '@/data/socials'
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
+import { siteButton } from '@/lib/ui'
+import { cn } from '@/lib/utils'
 
 const roles = ['AI/ML Engineer', 'Full Stack Developer', 'LLM Architect']
 
@@ -16,6 +12,7 @@ const Hero = () => {
   const [roleIndex, setRoleIndex] = useState(0)
   const [text, setText] = useState('')
   const [deleting, setDeleting] = useState(false)
+  const reducedMotion = usePrefersReducedMotion()
 
   // Typewriter effect
   useEffect(() => {
@@ -46,7 +43,7 @@ const Hero = () => {
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    if (reducedMotion) return
 
     let animId: number | null = null
     let running = false
@@ -156,47 +153,31 @@ const Hero = () => {
       document.removeEventListener('visibilitychange', sync)
       window.removeEventListener('resize', resize)
     }
-  }, [])
+  }, [reducedMotion])
 
   return (
     <section className="relative min-h-[70vh] flex flex-col items-center justify-center px-6 pt-20 md:pt-24 overflow-hidden">
       <canvas ref={canvasRef} className="absolute inset-0 z-0" />
 
       <div className="relative z-10 text-center max-w-3xl">
-        <h1
-          className="text-5xl md:text-7xl lg:text-8xl font-black mb-6"
-          style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.02em' }}
-        >
+        <h1 className="text-5xl md:text-7xl lg:text-8xl font-black mb-6 font-display tracking-[-0.02em]">
           HAIDARABBAS BALOSPURA
         </h1>
 
         <div className="h-8 mb-8">
-          <span
-            className="text-lg md:text-xl"
-            style={{ fontFamily: 'var(--font-mono)', color: 'hsl(var(--primary))' }}
-          >
+          <span className="text-lg md:text-xl font-mono-jb text-primary">
             {text}
             <span className="animate-pulse">|</span>
           </span>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-10">
-          <a
-            href="#projects"
-            className="px-6 py-3 text-sm font-medium rounded-md transition"
-            style={{
-              background: 'hsl(var(--primary))',
-              color: 'hsl(var(--primary-foreground))',
-              fontFamily: 'var(--font-mono)',
-              boxShadow: '0 0 20px hsl(var(--primary) / 0.3)',
-            }}
-          >
+          <a href="#projects" className={siteButton({ variant: 'primary', size: 'lg' })}>
             View My Work
           </a>
           <Link
             to="/resume"
-            className="px-6 py-3 text-sm font-medium rounded-md border transition hover:bg-accent/10"
-            style={{ borderColor: 'hsl(var(--border))', fontFamily: 'var(--font-mono)' }}
+            className={cn(siteButton({ variant: 'outline', size: 'lg' }), 'hover:bg-accent/10')}
           >
             Try Resume AI
           </Link>
@@ -204,41 +185,17 @@ const Hero = () => {
 
         {/* Social links */}
         <div className="flex gap-6 justify-center">
-          {[
-            {
-              label: 'GitHub',
-              href: 'https://github.com/haidarabbas731',
-              icon: <Github size={18} />,
-            },
-            {
-              label: 'LinkedIn',
-              href: 'https://www.linkedin.com/in/haidarabbas-balospura/',
-              icon: <Linkedin size={18} />,
-              hover: '#0A66C2',
-            },
-            { label: 'X', href: 'https://x.com/itz_hb_731', icon: <XIcon size={18} /> },
-            {
-              label: 'Discord',
-              href: 'https://discord.com/users/782117153699659816',
-              icon: <DiscordIcon size={18} />,
-              hover: '#5865F2',
-            },
-          ].map((s) => (
+          {socials.map(({ label, href, Icon, hover }) => (
             <a
-              key={s.label}
-              href={s.href}
-              aria-label={s.label}
+              key={label}
+              href={href}
+              aria-label={label}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-10 h-10 rounded-full border flex items-center justify-center transition text-muted-foreground hover:text-[color:var(--social-hover)] hover:border-primary hover:shadow-[0_0_12px_hsl(var(--primary)/0.4)]"
-              style={
-                {
-                  borderColor: 'hsl(var(--border))',
-                  '--social-hover': s.hover ?? 'hsl(var(--foreground))',
-                } as React.CSSProperties
-              }
+              className="w-10 h-10 rounded-full border border-border flex items-center justify-center transition text-muted-foreground hover:text-[color:var(--social-hover)] hover:border-primary hover:shadow-[0_0_12px_hsl(var(--primary)/0.4)]"
+              style={{ '--social-hover': hover ?? 'hsl(var(--foreground))' } as React.CSSProperties}
             >
-              {s.icon}
+              <Icon size={18} />
             </a>
           ))}
         </div>

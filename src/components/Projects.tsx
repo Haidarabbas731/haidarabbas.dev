@@ -9,8 +9,11 @@ import {
 } from '@/components/ui/carousel'
 import { projects } from '@/data/projects'
 import { resolveAsset } from '@/lib/resolveAsset'
+import { siteButton } from '@/lib/ui'
+import { cn } from '@/lib/utils'
 import Reveal from './Reveal'
-import SectionTitle from './SectionTitle'
+import Section from './Section'
+import WindowChrome from './WindowChrome'
 
 const Projects = () => {
   const project = projects[0]
@@ -33,47 +36,16 @@ const Projects = () => {
   }
 
   return (
-    <section className="py-16 md:py-20 px-6 max-w-6xl mx-auto">
-      <SectionTitle number="03" title="Featured Project" id="projects" />
-
+    <Section number="03" title="Featured Project" id="projects">
       <div className="grid md:grid-cols-5 gap-8 md:gap-12 items-center">
         {screenshots.length > 0 && (
           <Reveal className="md:col-span-3">
-            <div
-              className="rounded-lg border overflow-hidden"
-              style={{
-                borderColor: 'hsl(var(--border))',
-                background: 'hsl(var(--card))',
-                boxShadow: '0 0 30px hsl(var(--primary) / 0.08)',
-              }}
-            >
-              <div
-                className="flex items-center gap-2 px-4 py-3 border-b"
-                style={{ borderColor: 'hsl(var(--border))' }}
-              >
-                <span
-                  className="w-3 h-3 rounded-full"
-                  style={{ background: 'hsl(var(--dot-red))' }}
-                />
-                <span
-                  className="w-3 h-3 rounded-full"
-                  style={{ background: 'hsl(var(--dot-yellow))' }}
-                />
-                <span
-                  className="w-3 h-3 rounded-full"
-                  style={{ background: 'hsl(var(--dot-green))' }}
-                />
-                <span
-                  className="ml-3 px-3 py-1 text-xs rounded truncate"
-                  style={{
-                    background: 'hsl(var(--muted))',
-                    color: 'hsl(var(--muted-foreground))',
-                    fontFamily: 'var(--font-mono)',
-                  }}
-                >
+            <div className="rounded-lg border border-border bg-card overflow-hidden shadow-[0_0_30px_hsl(var(--primary)/0.08)]">
+              <WindowChrome>
+                <span className="ml-3 px-3 py-1 text-xs rounded truncate bg-muted text-muted-foreground font-mono-jb">
                   {screenshots[current]?.label}
                 </span>
-              </div>
+              </WindowChrome>
 
               <Carousel setApi={handleApi} opts={{ loop: true }}>
                 <CarouselContent className="ml-0">
@@ -98,10 +70,7 @@ const Projects = () => {
               </Carousel>
 
               {screenshots.length > 1 && (
-                <div
-                  className="flex items-center justify-center gap-3 p-3 border-t"
-                  style={{ borderColor: 'hsl(var(--border))' }}
-                >
+                <div className="flex items-center justify-center gap-3 p-3 border-t border-border">
                   {screenshots.map((shot, i) => (
                     <button
                       type="button"
@@ -109,10 +78,10 @@ const Projects = () => {
                       onClick={() => api?.scrollTo(i)}
                       aria-label={`Show ${shot.label} screenshot`}
                       aria-current={current === i}
-                      className="w-14 h-9 rounded overflow-hidden border-2 transition-colors"
-                      style={{
-                        borderColor: current === i ? 'hsl(var(--primary))' : 'hsl(var(--border))',
-                      }}
+                      className={cn(
+                        'w-14 h-9 rounded overflow-hidden border-2 transition-colors',
+                        current === i ? 'border-primary' : 'border-border'
+                      )}
                     >
                       <img
                         src={shot.src}
@@ -132,25 +101,13 @@ const Projects = () => {
 
         {/* Details */}
         <Reveal delay={100} className={screenshots.length > 0 ? 'md:col-span-2' : 'md:col-span-5'}>
-          <h3 className="text-2xl font-bold mb-3" style={{ fontFamily: 'var(--font-display)' }}>
-            {project.title}
-          </h3>
-          <p
-            className="text-sm leading-relaxed mb-5"
-            style={{ color: 'hsl(var(--foreground) / 0.75)' }}
-          >
-            {project.description}
-          </p>
+          <h3 className="text-2xl font-bold mb-3 font-display">{project.title}</h3>
+          <p className="text-sm leading-relaxed mb-5 text-foreground/75">{project.description}</p>
           <div className="flex flex-wrap gap-2 mb-6">
             {project.techStack.map((t) => (
               <span
                 key={t}
-                className="px-2 py-0.5 text-xs rounded-full border"
-                style={{
-                  borderColor: 'hsl(var(--border))',
-                  color: 'hsl(var(--foreground) / 0.6)',
-                  fontFamily: 'var(--font-mono)',
-                }}
+                className="px-2 py-0.5 text-xs rounded-full border border-border text-foreground/60 font-mono-jb"
               >
                 {t}
               </span>
@@ -161,13 +118,7 @@ const Projects = () => {
               href={project.liveUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-4 py-2 text-sm rounded-md transition"
-              style={{
-                background: 'hsl(var(--primary))',
-                color: 'hsl(var(--primary-foreground))',
-                fontFamily: 'var(--font-mono)',
-                boxShadow: '0 0 16px hsl(var(--primary) / 0.25)',
-              }}
+              className={siteButton({ variant: 'primary', size: 'md' })}
             >
               Live Demo
             </a>
@@ -175,15 +126,17 @@ const Projects = () => {
               href={project.githubUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-4 py-2 text-sm rounded-md border transition-colors hover:bg-primary hover:text-primary-foreground"
-              style={{ borderColor: 'hsl(var(--border))', fontFamily: 'var(--font-mono)' }}
+              className={cn(
+                siteButton({ variant: 'outline', size: 'md' }),
+                'hover:bg-primary hover:text-primary-foreground'
+              )}
             >
               GitHub
             </a>
           </div>
         </Reveal>
       </div>
-    </section>
+    </Section>
   )
 }
 

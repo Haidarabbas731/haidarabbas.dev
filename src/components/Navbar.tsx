@@ -1,19 +1,51 @@
 import type { MouseEvent } from 'react'
 import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { sections } from '@/data/sections'
+import { cn } from '@/lib/utils'
 import ThemeToggle from './ThemeToggle'
-
-const navLinks = [
-  { label: 'About', id: 'about' },
-  { label: 'Skills', id: 'skills' },
-  { label: 'Experience', id: 'experience' },
-  { label: 'Projects', id: 'projects' },
-  { label: 'Contact', id: 'contact' },
-]
 
 function isPlainLeftClick(e: MouseEvent) {
   return e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey
 }
+
+interface NavLinksProps {
+  onSelect: (id: string) => (e: MouseEvent) => void
+  className?: string
+}
+
+const NavLinks = ({ onSelect, className }: NavLinksProps) => (
+  <>
+    {sections.map((s) => (
+      <a
+        key={s.id}
+        href={`/#${s.id}`}
+        onClick={onSelect(s.id)}
+        className={cn('text-sm tracking-wide font-mono-jb text-muted-foreground', className)}
+      >
+        {s.label}
+      </a>
+    ))}
+  </>
+)
+
+interface ResumeLinkProps {
+  onClick?: () => void
+  className?: string
+}
+
+const ResumeLink = ({ onClick, className }: ResumeLinkProps) => (
+  <Link
+    to="/resume"
+    onClick={onClick}
+    className={cn(
+      'text-xs px-3 py-1.5 rounded-full border transition font-mono-jb text-primary border-primary/[0.35] bg-primary/[0.06]',
+      className
+    )}
+  >
+    Resume AI ✦
+  </Link>
+)
 
 const Navbar = () => {
   const [open, setOpen] = useState(false)
@@ -54,37 +86,15 @@ const Navbar = () => {
         <a
           href="/"
           onClick={goHome}
-          className="text-2xl font-bold tracking-tight"
-          style={{ fontFamily: 'var(--font-mono)', color: 'hsl(var(--primary))' }}
+          className="text-2xl font-bold tracking-tight font-mono-jb text-primary"
         >
           HB
         </a>
 
         {/* Desktop */}
         <div className="hidden md:flex items-center gap-8">
-          {navLinks.map((l) => (
-            <a
-              key={l.id}
-              href={`/#${l.id}`}
-              onClick={goToSection(l.id)}
-              className="text-sm tracking-wide transition-colors hover:text-primary"
-              style={{ fontFamily: 'var(--font-mono)', color: 'hsl(var(--muted-foreground))' }}
-            >
-              {l.label}
-            </a>
-          ))}
-          <Link
-            to="/resume"
-            className="text-xs px-3 py-1.5 rounded-full border transition hover:shadow-[0_0_12px_hsl(var(--primary)/0.4)]"
-            style={{
-              fontFamily: 'var(--font-mono)',
-              color: 'hsl(var(--primary))',
-              borderColor: 'hsl(var(--primary) / 0.35)',
-              background: 'hsl(var(--primary) / 0.06)',
-            }}
-          >
-            Resume AI ✦
-          </Link>
+          <NavLinks onSelect={goToSection} className="transition-colors hover:text-primary" />
+          <ResumeLink className="hover:shadow-[0_0_12px_hsl(var(--primary)/0.4)]" />
           <ThemeToggle />
         </div>
 
@@ -117,30 +127,8 @@ const Navbar = () => {
           borderColor: 'hsl(var(--border) / 0.3)',
         }}
       >
-        {navLinks.map((l) => (
-          <a
-            key={l.id}
-            href={`/#${l.id}`}
-            onClick={goToSection(l.id)}
-            className="text-sm tracking-wide"
-            style={{ fontFamily: 'var(--font-mono)', color: 'hsl(var(--muted-foreground))' }}
-          >
-            {l.label}
-          </a>
-        ))}
-        <Link
-          to="/resume"
-          onClick={() => setOpen(false)}
-          className="text-xs px-3 py-1.5 rounded-full border w-fit transition"
-          style={{
-            fontFamily: 'var(--font-mono)',
-            color: 'hsl(var(--primary))',
-            borderColor: 'hsl(var(--primary) / 0.35)',
-            background: 'hsl(var(--primary) / 0.06)',
-          }}
-        >
-          Resume AI ✦
-        </Link>
+        <NavLinks onSelect={goToSection} />
+        <ResumeLink onClick={() => setOpen(false)} className="w-fit" />
         <ThemeToggle />
       </div>
     </nav>

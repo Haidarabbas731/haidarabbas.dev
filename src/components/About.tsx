@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import Reveal from './Reveal'
-import SectionTitle from './SectionTitle'
+import Section from './Section'
+import WindowChrome from './WindowChrome'
 
 type Token = { id: number; text: string; color: string }
 
@@ -60,12 +62,7 @@ function visibleTokens(count: number): Token[] {
 const TerminalCard = () => {
   const containerRef = useRef<HTMLDivElement>(null)
   const [typedCount, setTypedCount] = useState(0)
-  const [reducedMotion, setReducedMotion] = useState(false)
-
-  useEffect(() => {
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
-    setReducedMotion(mq.matches)
-  }, [])
+  const reducedMotion = usePrefersReducedMotion()
 
   useEffect(() => {
     if (reducedMotion) {
@@ -108,26 +105,18 @@ const TerminalCard = () => {
   return (
     <div
       ref={containerRef}
-      className="rounded-lg border overflow-hidden"
+      className="rounded-lg border overflow-hidden font-mono-jb"
       style={{
         background: 'hsl(var(--terminal-bg))',
         borderColor: 'hsl(var(--terminal-key) / 0.3)',
         boxShadow: '0 0 30px hsl(var(--terminal-key) / 0.1)',
-        fontFamily: 'var(--font-mono)',
       }}
     >
-      {/* Title bar */}
-      <div
-        className="flex items-center gap-2 px-4 py-3 border-b"
-        style={{ borderColor: 'hsl(var(--terminal-border))' }}
-      >
-        <span className="w-3 h-3 rounded-full" style={{ background: 'hsl(var(--dot-red))' }} />
-        <span className="w-3 h-3 rounded-full" style={{ background: 'hsl(var(--dot-yellow))' }} />
-        <span className="w-3 h-3 rounded-full" style={{ background: 'hsl(var(--dot-green))' }} />
+      <WindowChrome borderColor="hsl(var(--terminal-border))">
         <span className="ml-3 text-xs" style={{ color: 'hsl(var(--terminal-muted))' }}>
           about.py
         </span>
-      </div>
+      </WindowChrome>
       {/* Code */}
       {/* The finished text sits invisibly in the same grid cell, so the card is its final size from
           the first frame and typing never pushes the page down */}
@@ -154,9 +143,7 @@ const TerminalCard = () => {
 }
 
 const About = () => (
-  <section className="pt-4 md:pt-8 pb-16 md:pb-20 px-6 max-w-6xl mx-auto">
-    <SectionTitle number="01" title="About" id="about" />
-
+  <Section number="01" title="About" id="about" compact>
     <div className="grid md:grid-cols-2 gap-12 md:gap-16 items-center">
       <Reveal>
         <TerminalCard />
@@ -164,27 +151,21 @@ const About = () => (
 
       {/* Bio */}
       <Reveal delay={100}>
-        <p
-          className="text-lg leading-relaxed mb-4"
-          style={{ color: 'hsl(var(--foreground) / 0.85)' }}
-        >
+        <p className="text-lg leading-relaxed mb-4 text-foreground/85">
           A 21-year-old AI/ML engineer based in Gujarat, India, focused on building production-ready
           AI systems.
         </p>
-        <p
-          className="text-lg leading-relaxed mb-4"
-          style={{ color: 'hsl(var(--foreground) / 0.85)' }}
-        >
+        <p className="text-lg leading-relaxed mb-4 text-foreground/85">
           I work with large language models, fine-tuning pipelines, and autonomous agents, creating
           systems that integrate into real workflows and operate reliably at scale.
         </p>
-        <p className="text-lg leading-relaxed" style={{ color: 'hsl(var(--foreground) / 0.85)' }}>
+        <p className="text-lg leading-relaxed text-foreground/85">
           My focus is on making AI practical: systems that perform consistently, automate meaningful
           tasks, and hold up in real-world use.
         </p>
       </Reveal>
     </div>
-  </section>
+  </Section>
 )
 
 export default About

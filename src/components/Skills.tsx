@@ -1,40 +1,26 @@
+import type { ReactNode } from 'react'
 import { education } from '@/data/education'
 import { skills } from '@/data/skills'
 import Reveal from './Reveal'
-import SectionTitle from './SectionTitle'
+import Section from './Section'
+
+const SubHeading = ({ children }: { children: ReactNode }) => (
+  <h3 className="text-sm uppercase tracking-widest mb-5 font-mono-jb text-primary">{children}</h3>
+)
 
 const Skills = () => (
-  <section className="py-16 md:py-20 px-6 max-w-6xl mx-auto">
-    <SectionTitle number="02" title="Background" id="skills" />
-
+  <Section number="02" title="Background" id="skills">
     <div className="grid md:grid-cols-2 gap-12 md:gap-16">
       {/* Education */}
       <div>
-        <h3
-          className="text-sm uppercase tracking-widest mb-5"
-          style={{ color: 'hsl(var(--primary))', fontFamily: 'var(--font-mono)' }}
-        >
-          Education
-        </h3>
+        <SubHeading>Education</SubHeading>
         <div className="space-y-4">
           {education.map((edu, i) => (
             <Reveal key={edu.degree} delay={i * 60}>
-              <div
-                className="rounded-lg border p-5"
-                style={{ borderColor: 'hsl(var(--border))', background: 'hsl(var(--card))' }}
-              >
-                <h4 className="text-base font-bold" style={{ fontFamily: 'var(--font-display)' }}>
-                  {edu.degree}
-                </h4>
-                <div className="text-sm mt-1" style={{ color: 'hsl(var(--muted-foreground))' }}>
-                  {edu.institution}
-                </div>
-                <div
-                  className="text-xs mt-2"
-                  style={{ color: 'hsl(var(--primary))', fontFamily: 'var(--font-mono)' }}
-                >
-                  {edu.period}
-                </div>
+              <div className="rounded-lg border border-border bg-card p-5">
+                <h4 className="text-base font-bold font-display">{edu.degree}</h4>
+                <div className="text-sm mt-1 text-muted-foreground">{edu.institution}</div>
+                <div className="text-xs mt-2 font-mono-jb text-primary">{edu.period}</div>
               </div>
             </Reveal>
           ))}
@@ -43,12 +29,7 @@ const Skills = () => (
 
       {/* Stack */}
       <div>
-        <h3
-          className="text-sm uppercase tracking-widest mb-5"
-          style={{ color: 'hsl(var(--primary))', fontFamily: 'var(--font-mono)' }}
-        >
-          Stack
-        </h3>
+        <SubHeading>Stack</SubHeading>
         <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
           {skills.map((skill, i) => (
             <Reveal key={skill.name} delay={Math.min(i, 8) * 40}>
@@ -57,10 +38,9 @@ const Skills = () => (
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={skill.name}
-                className="group flex h-full flex-col items-center justify-center gap-2 rounded-lg border p-4 transition hover:-translate-y-0.5 border-[hsl(var(--border))] hover:border-[var(--skill-color)] hover:shadow-[0_0_12px_var(--skill-glow)]"
+                className="group flex h-full flex-col items-center justify-center gap-2 rounded-lg border bg-card p-4 transition hover:-translate-y-0.5 border-[hsl(var(--border))] hover:border-[var(--skill-color)] hover:shadow-[0_0_12px_var(--skill-glow)]"
                 style={
                   {
-                    background: 'hsl(var(--card))',
                     '--skill-color': `color-mix(in srgb, ${skill.color} var(--skill-mix), hsl(var(--foreground)))`,
                     '--skill-glow': `${skill.color}33`,
                   } as React.CSSProperties
@@ -73,10 +53,7 @@ const Skills = () => (
                   <title>{skill.name}</title>
                   <path d={skill.path} />
                 </svg>
-                <span
-                  className="text-xs text-center"
-                  style={{ color: 'hsl(var(--muted-foreground))', fontFamily: 'var(--font-mono)' }}
-                >
+                <span className="text-xs text-center text-muted-foreground font-mono-jb">
                   {skill.name}
                 </span>
               </a>
@@ -85,7 +62,7 @@ const Skills = () => (
         </div>
       </div>
     </div>
-  </section>
+  </Section>
 )
 
 export default Skills
