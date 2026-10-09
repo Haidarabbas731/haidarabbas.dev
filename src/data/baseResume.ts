@@ -71,7 +71,7 @@ export const BASE_RESUME_LATEX = `\\documentclass[letterpaper,10pt]{article}
 
 \\resumeheader
   {Haidarabbas Balospura}
-  {haidarabbasbalospura@gmail.com}
+  {hello@haidarabbas.dev}
   {+91\\,955\\,861\\,4908}
   {\\href{https://www.linkedin.com/in/haidarabbas-balospura/}{LinkedIn}}
   {\\href{https://github.com/haidarabbas731}{GitHub}}

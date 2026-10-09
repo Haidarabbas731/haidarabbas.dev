@@ -2,10 +2,6 @@
 
 > Personal portfolio and AI resume tailoring tool built with React, TypeScript, and Vite.
 
-[![Deployed on Netlify](https://img.shields.io/badge/Deployed%20on-Netlify-00C7B7?style=flat&logo=netlify)](https://netlify.com)
-[![Built with Vite](https://img.shields.io/badge/Built%20with-Vite-646CFF?style=flat&logo=vite)](https://vitejs.dev)
-[![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178C6?style=flat&logo=typescript)](https://www.typescriptlang.org)
-
 ---
 
 ## Features
@@ -30,7 +26,7 @@
 | Build | Vite 5 |
 | Styling | Tailwind CSS + shadcn/ui |
 | Routing | React Router v6 |
-| Serverless | Netlify Functions |
+| Serverless | Serverless function for owner auth |
 | Package Manager | Bun |
 | AI Providers | Gemini API, OpenRouter API |
 | PDF | @react-pdf/renderer (build), pdf.js (read) |
@@ -49,8 +45,8 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/haidarabbas731/portfolio.git
-cd portfolio
+git clone https://github.com/haidarabbas731/Haidarabbas.dev.git
+cd Haidarabbas.dev
 
 # Install dependencies
 bun install
@@ -70,29 +66,22 @@ GEMINI_API_KEY=AIzaSy...        # optional
 OPENROUTER_API_KEY=sk-or-...   # optional
 ```
 
-> **Note:** These variables are server-side only (no `VITE_` prefix). They are used exclusively inside `netlify/functions/auth.ts` and are never exposed to the browser bundle.
+> **Note:** These variables are server-side only (no `VITE_` prefix). They are only read by the serverless auth function and are never exposed to the browser bundle.
 
 ### Running Locally
 
 ```bash
-# Portfolio only (no owner auth)
 bun run dev
-
-# Portfolio + Netlify Functions (owner mode on /resume works)
-bunx netlify dev
 ```
 
-Open [http://localhost:8080](http://localhost:8080) (Vite) or [http://localhost:8888](http://localhost:8888) (Netlify Dev).
+Open [http://localhost:8080](http://localhost:8080).
 
 ---
 
 ## Project Structure
 
 ```
-portfolio/
-├── netlify/
-│   └── functions/
-│       └── auth.ts           # Owner auth serverless function
+Haidarabbas.dev/
 ├── src/
 │   ├── components/
 │   │   ├── resume/           # Resume AI sub-components
@@ -122,13 +111,12 @@ portfolio/
 │   │   ├── Index.tsx         # Main portfolio page
 │   │   └── ResumePage.tsx    # /resume page
 │   ├── services/
-│   │   ├── authService.ts    # Netlify Function call + localStorage
+│   │   ├── authService.ts    # Owner auth call + localStorage
 │   │   ├── modelService.ts   # Gemini + OpenRouter model fetching
 │   │   └── resumeService.ts  # AI tailoring (+ structuredTailor, renderResumePdf, pdfText)
 │   └── types/
 │       └── resume.ts         # TypeScript types
 ├── .env.example
-├── netlify.toml
 └── vite.config.ts
 ```
 
@@ -143,7 +131,7 @@ Owner Mode                          Public Mode
 ──────────                          ───────────
 Enter password                      Select provider (Gemini / OpenRouter)
      ↓                                        ↓
-Netlify Function verifies           Enter your own API key (saved in localStorage)
+Server function verifies            Enter your own API key (saved in localStorage)
      ↓                                        ↓
 Returns server-side API keys        Upload a PDF or paste your resume
      ↓                                        ↓
@@ -163,34 +151,6 @@ Select provider + model             Select model from live list
 
 ### Privacy
 
-- Owner API keys live in Netlify environment variables, never in the browser bundle
+- Owner API keys live in server-side environment variables, never in the browser bundle
 - Public users' API keys are stored only in `localStorage`, never sent to any server
 - All AI calls are made directly from the browser to the provider (Google / OpenRouter)
-
----
-
-## Deployment
-
-Deploy to Netlify:
-
-1. Connect the GitHub repo to Netlify
-2. Set environment variables in the Netlify dashboard:
-   - `OWNER_PASSWORD`
-   - `GEMINI_API_KEY` *(optional)*
-   - `OPENROUTER_API_KEY` *(optional)*
-3. Build settings are already configured in `netlify.toml`
-
-```toml
-[build]
-  command = "npm run build"
-  publish = "dist"
-
-[functions]
-  directory = "netlify/functions"
-```
-
----
-
-## License
-
-MIT

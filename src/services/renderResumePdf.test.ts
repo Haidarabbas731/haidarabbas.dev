@@ -64,7 +64,7 @@ describe('contact line', () => {
     const data = structuredClone(SAMPLE_DATA)
     data.contact = {
       location: 'Remote',
-      email: 'haidarabbasbalospura@gmail.com',
+      email: 'hello@haidarabbas.dev',
       phone: '+91 955 861 4908',
       links: [
         { label: 'LinkedIn', url: 'https://linkedin.com/in/haidarabbas-balospura' },
@@ -76,6 +76,6 @@ describe('contact line', () => {
     expect(text).not.toMatch(/\|\s*-/)
     expect(text).toContain('linkedin.com/in/haidarabbas-balospura')
     expect(text).toContain('github.com/haidarabbas731')
-    expect(text).toContain('haidarabbasbalospura@gmail.com')
+    expect(text).toContain('hello@haidarabbas.dev')
   }, 20_000)
 })

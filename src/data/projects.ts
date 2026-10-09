@@ -27,4 +27,19 @@ export const projects: Project[] = [
       { path: 'ragify/ragify-preview-3.png', label: 'AI Chat' },
     ],
   },
+  {
+    title: 'Plan Generator',
+    description:
+      'Turn a goal into a plan for every day. Say what you want to learn and how much time you have, and the plan is written block by block while you read it. Chat with it to reshape the plan, undo any change, and keep a daily streak. Bring your own AI key.',
+    techStack: ['SvelteKit', 'Svelte 5', 'TypeScript', 'PostgreSQL', 'Redis', 'BullMQ', 'Docker'],
+    liveUrl: 'https://plan-generator.haidarabbas.dev',
+    githubUrl: 'https://github.com/Haidarabbas731/Plan-Generator',
+    screenshots: [
+      { path: 'plan-generator/plan-generator-preview-1.png', label: 'Landing Page' },
+      { path: 'plan-generator/plan-generator-preview-2.png', label: 'Your Plans' },
+      { path: 'plan-generator/plan-generator-preview-3.png', label: 'Plan View' },
+      { path: 'plan-generator/plan-generator-preview-4.png', label: 'AI Chat' },
+      { path: 'plan-generator/plan-generator-preview-5.png', label: 'New Plan' },
+    ],
+  },
 ]

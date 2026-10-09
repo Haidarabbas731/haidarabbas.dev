@@ -6,12 +6,13 @@ This is a personal portfolio site with one main page and a free resume tailoring
 
 ## Pages
 
-- [Portfolio](https://haidarabbas.dev/): About, background, experience, featured project, and contact
+- [Portfolio](https://haidarabbas.dev/): About, background, experience, projects, and contact
 - [Resume AI](https://haidarabbas.dev/resume): Free tool that tailors a resume to a job description. It runs in the browser with the visitor's own API key
 
 ## Projects
 
 - [Ragify](https://ragifyai.netlify.app/): A production RAG app for chatting with your own documents. [Source code](https://github.com/Haidarabbas731/Ragify)
+- [Plan Generator](https://plan-generator.haidarabbas.dev): Turns a goal into a day-by-day study plan that is written block by block, with a chat to reshape it. [Source code](https://github.com/Haidarabbas731/Plan-Generator)
 
 ## Profiles
 
@@ -21,4 +22,4 @@ This is a personal portfolio site with one main page and a free resume tailoring
 
 ## Contact
 
-- Email: haidarabbasbalospura@gmail.com
+- Email: hello@haidarabbas.dev

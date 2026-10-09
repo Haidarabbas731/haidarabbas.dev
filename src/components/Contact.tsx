@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils'
 import Reveal from './Reveal'
 import Section from './Section'
 
-const EMAIL = 'haidarabbasbalospura@gmail.com'
+const EMAIL = 'hello@haidarabbas.dev'
 
 type CopyState = 'idle' | 'copied' | 'failed'
 
